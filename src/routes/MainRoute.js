@@ -10,11 +10,14 @@ import EmailVerification from "../pages/EmailVerification";
 import Signin from "../pages/auth/signin/Signin";
 import Signup from "../pages/auth/signup/Signup";
 import Page404 from "../pages/Page404";
+import ForgotPassword from "../pages/auth/forgot-password/ForgotPassword";
+import EmailVerify from "../pages/EmailVerify";
+import ResetPassword from "../pages/auth/reset-password/ResetPassword";
 
 const MainRoute = () => {
+  const location = useLocation();
   const userData = getLocalStorageItem(USER.USER_DATA);
   const token = getLocalStorageItem(USER.ACCESS_TOKEN);
-  console.log(token)
 
   if (token) {
     return (
@@ -22,9 +25,13 @@ const MainRoute = () => {
         <Routes>
           <Route path="/" element={<DashboardLayout />}>
             <Route path="/" element={<HomePage />} />
-            <Route path="verify">
-              <Route path=":email/:token" element={<EmailVerification />} />
-            </Route>
+            <Route path="404" element={<Page404 />} />
+            <Route
+              path="*"
+              element={
+                <Navigate to="/404" state={{ from: location }} replace />
+              }
+            />
           </Route>
         </Routes>
       </>
@@ -36,14 +43,19 @@ const MainRoute = () => {
       <Route path="/" element={<Signin />} />
       <Route path="signin" element={<Signin />} />
       <Route path="signup" element={<Signup />} />
+      <Route path="forgot-password" element={<ForgotPassword />} />
+      <Route path="resetpass" element={<ResetPassword />} />
       <Route path="verify">
         <Route path=":email/:token" element={<EmailVerification />} />
       </Route>
+      <Route path="email-verify" element={<EmailVerify />} />
       <Route path="404" element={<Page404 />} />
-      {/* <Route path="*" element={<Navigate to="/404" state={{ from: location }} replace />} /> */}
+      {/* <Route
+        path="*"
+        element={<Navigate to="/404" state={{ from: location }} replace />}
+      /> */}
     </Routes>
   );
-
 };
 
 export default MainRoute;

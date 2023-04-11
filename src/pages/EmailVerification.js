@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 // @mui
@@ -9,7 +9,11 @@ import {
   Container,
   Typography,
   Box,
+  Stack,
+  Skeleton,
+  CardContent
 } from "@mui/material";
+import Lottie from "react-lottie";
 
 // components
 import Page from "../components/Page";
@@ -17,6 +21,9 @@ import Page from "../components/Page";
 // api
 import userApi from "../services/userApi";
 
+// animation
+import Invalid from '../utils/assets/animation/invalid.json'
+import Verified from '../utils/assets/animation/verified.json'
 // ----------------------------------------------------------------------
 
 const RootStyle = styled("div")(({ theme }) => ({
@@ -42,19 +49,23 @@ export default function EmailVerification() {
   const navigate = useNavigate();
   const { email, token } = useParams();
   const { verifyEmail } = userApi;
+  const [verifyStatus, setVerifyStatus] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     (async () => {
+      setIsLoading(true)
       try {
-        const response = await verifyEmail(token.replace('token=', ''), {
+        const response = await verifyEmail(token.replace("token=", ""), {
           email: email,
         });
         setTimeout(() => {
-          toast.success("Email verified");
-          navigate("/login");
-        }, 3000);
+          navigate("/signin");
+        }, 3500);
       } catch (e) {
         console.log(e);
+        setVerifyStatus(true);
       }
+      setIsLoading(false);
     })();
   }, []);
 
@@ -64,35 +75,81 @@ export default function EmailVerification() {
         <Container maxWidth="sm">
           <Card sx={{ marginTop: 10 }}>
             <ContentStyle>
-              <Box
-                sx={{
-                  height: 200,
-                  width: 200,
-                  borderRadius: 50,
-                  borderWidth: 3,
-                  border: 3,
-                  borderColor: "gray",
-                  alignSelf: "center",
-                  alignItems: "center",
-                }}
-              >
-                <img
-                  alt="register"
-                  src="/static/laundry-shop.png"
-                  style={{
-                    height: 200,
-                    width: 200,
-                    marginBottom: 10,
-                    justifySelf: "center",
-                    alignSelf: "center",
-                  }}
-                />
-              </Box>
-
-              <Typography variant="h3" gutterBottom sx={{ mt: 5 }}>
-                Verifying Email...
-              </Typography>
-              <CircularProgress sx={{ mt: 5 }} />
+              <Card sx={{ minWidth: 275 }}>
+                <CardContent>
+                  {isLoading ? (
+                    <Box
+                      display="flex"
+                      justifyContent="center"
+                      alignItems="center"
+                    >
+                      <Stack>
+                        <Skeleton
+                          variant="text"
+                          sx={{ fontSize: "3rem", width: 800 }}
+                        />
+                        <Skeleton
+                          variant="rectangular"
+                          width={800}
+                          height={360}
+                        />
+                        <Skeleton
+                          variant="text"
+                          sx={{ fontSize: "2rem", width: 800 }}
+                        />
+                      </Stack>
+                    </Box>
+                  ) : (
+                    <Box>
+                      {verifyStatus ? (
+                        <Box>
+                          <Typography variant="h3" color="#A62349">
+                            Invalid Verification
+                          </Typography>
+                          <Lottie
+                            options={{
+                              loop: true,
+                              autoplay: true,
+                              animationData: Invalid,
+                              rendererSettings: {
+                                preserveAspectRatio: "xMidYMid slice",
+                              },
+                              isClickToPauseDisabled: true,
+                            }}
+                            height={400}
+                            width={400}
+                          />
+                          <Typography variant="p" color="gray">
+                            Cannot verify email something went wrong
+                          </Typography>
+                        </Box>
+                      ) : (
+                        <Box sx={{ display: 'grid',justifyItems: 'center'}}>
+                          <Typography variant="h3" color="#54BAB9">
+                            Account Verified
+                          </Typography>
+                          <Lottie
+                            options={{
+                              loop: true,
+                              autoplay: true,
+                              animationData: Verified,
+                              rendererSettings: {
+                                preserveAspectRatio: "xMidYMid slice",
+                              },
+                              isClickToPauseDisabled: true,
+                            }}
+                            height={400}
+                            width={400}
+                          />
+                          <Typography variant="p" color="gray">
+                            Account has been verified redirecting to Login page
+                          </Typography>
+                        </Box>
+                      )}
+                    </Box>
+                  )}
+                </CardContent>
+              </Card>
             </ContentStyle>
           </Card>
         </Container>

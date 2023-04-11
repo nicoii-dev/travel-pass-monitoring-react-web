@@ -1,39 +1,41 @@
-import * as Yup from "yup";
-import { useState } from "react";
-import { useNavigate, Link as RouterLink } from "react-router-dom";
-import { useMutation } from "react-query";
-import { toast } from "react-toastify";
-// form
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import React, { useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 // @mui
+import { styled } from "@mui/material/styles";
 import {
+  Card,
+  Container,
+  Typography,
+  Link,
   Stack,
   IconButton,
   InputAdornment,
-  Card,
-  Typography,
-  Container,
-  Link,
-  Box,
   Avatar,
+  Box,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { styled } from "@mui/material";
+import Lottie from "react-lottie";
+// forms
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { toast } from "react-toastify";
+import { useMutation } from "react-query";
 // components
-import Iconify from "../../../components/Iconify";
-import { FormProvider, RHFTextField } from "../../../components/hook-form";
-import useResponsive from "../../../hooks/useResponsive";
 import Page from "../../../components/Page";
+import { FormProvider, RHFTextField } from "../../../components/hook-form";
+import Iconify from "../../../components/Iconify";
 
 // schema
-import { SignupSchema } from "../../../yup-schema/signupSchema";
+import { ResetPasswordSchema } from "../../../yup-schema/resetPasswordSchema";
 
-// hooks
-import { setLocalStorageItem } from "../../../utils/setLocalStorage";
-import userApi from "../../../services/userApi";
+// api
+import forgotPasswordApi from "../../../services/forgotPasswordApi";
+
+// animation
+import Countdown from '../../../utils/assets/animation/countdown.json';
 
 // ----------------------------------------------------------------------
+
 const RootStyle = styled("div")(({ theme }) => ({
   [theme.breakpoints.up("md")]: {
     display: "flex",
@@ -42,49 +44,30 @@ const RootStyle = styled("div")(({ theme }) => ({
   height: "100vh",
 }));
 
-const SectionStyle = styled(Card)(({ theme }) => ({
-  width: "100%",
-  maxWidth: 464,
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  margin: theme.spacing(-10, 0, 2, 2),
-}));
-
 const ContentStyle = styled("div")(({ theme }) => ({
   margin: "auto",
   minHeight: "60vh",
   display: "flex",
-  justifyContent: "center",
   flexDirection: "column",
   padding: theme.spacing(2, 0),
 }));
 
-const genderData = [
-  { value: "male", label: "Male" },
-  { value: "female", label: "Female" },
-];
+// ----------------------------------------------------------------------
 
-export default function Signup() {
+export default function ResetPassword() {
   const navigate = useNavigate();
-  const { register } = userApi;
-  const smUp = useResponsive("up", "sm");
-  const mdUp = useResponsive("up", "md");
+  const { resetPassword } = forgotPasswordApi;
+  const [searchParams, setSearchParams] = useSearchParams();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [emailState, setEmail] = useState('');
+  const [isNavigate, setIsNavigate] = useState(false);
 
   const defaultValues = {
-    firstName: "",
-    middleName: "",
-    lastName: "",
     email: "",
-    password: "",
-    confirmPassword: "",
   };
 
   const methods = useForm({
-    resolver: yupResolver(SignupSchema),
+    resolver: yupResolver(ResetPasswordSchema),
     defaultValues,
   });
 
@@ -93,33 +76,38 @@ export default function Signup() {
     formState: { isSubmitting },
   } = methods;
 
-  const { mutate: registerUser, isLoading: loginUserLoading } = useMutation(
-    (payload) => register(payload),
+  const { mutate: resetUser, isLoading: forgotLoading } = useMutation(
+    (payload) => resetPassword(payload),
     {
-      onSuccess: (data) => {
-        navigate("/email-verify");
+      onSuccess: (result) => {
+        if (result?.data?.status == 422) {
+          return toast.error(result.data.message);
+        }
+        setIsNavigate(true);
+        setTimeout(() => {
+          navigate("/signin");
+        }, 3000);
+        toast.success(result.data.message);
       },
       onError: (error) => {
-        toast.error(error.response.data.message);
+        toast.error("Something went wrong.");
       },
     }
   );
 
   const onSubmit = async (data) => {
     const payload = {
-      first_name: data.firstName,
-      middle_name: data.middleName,
-      last_name: data.lastName,
-      role: "lsi",
-      email: data.email,
-      password: data.password,
+      token: searchParams.get("token"),
+      email: searchParams.get("email"),
+      password: data.newPassword,
       password_confirmation: data.confirmPassword,
     };
-    registerUser(payload);
+    resetUser(payload);
+    // navigate('/dashboard')
   };
 
   return (
-    <Page title="Register">
+    <Page title="Signin">
       <svg
         width="500"
         height="80"
@@ -148,23 +136,21 @@ export default function Signup() {
               sx={{ width: 150, height: 150 }}
             />
           </Box>
+
           <ContentStyle>
-            <Typography variant="h4" gutterBottom>
-              Creating your account.
+            <Typography variant="h4" gutterBottom sx={{ color: "#202020" }}>
+              Reset your Password
             </Typography>
 
-            <Typography sx={{ color: "text.secondary", mb: 5 }}></Typography>
+            <Typography sx={{ color: "#202020", mb: 5 }}>
+              Enter your new password below.
+            </Typography>
+
             <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
               <Stack spacing={2}>
-                <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                  <RHFTextField name="firstName" label="First name" />
-                  <RHFTextField name="middleName" label="Middle name" />
-                  <RHFTextField name="lastName" label="Last name" />
-                </Stack>
-                <RHFTextField name="email" label="Email address" />
                 <RHFTextField
-                  name="password"
-                  label="Password"
+                  name="newPassword"
+                  label="New password"
                   type={showPassword ? "text" : "password"}
                   InputProps={{
                     endAdornment: (
@@ -208,36 +194,38 @@ export default function Signup() {
                     ),
                   }}
                 />
-
-                <LoadingButton
-                  fullWidth
-                  size="large"
-                  type="submit"
-                  variant="contained"
-                  loading={loginUserLoading}
-                >
-                  Register
-                </LoadingButton>
               </Stack>
+              <LoadingButton
+                fullWidth
+                size="large"
+                type="submit"
+                variant="contained"
+                loading={forgotLoading}
+                sx={{ marginTop: 5 }}
+              >
+                Reset
+              </LoadingButton>
             </FormProvider>
 
-            {smUp && (
-              <Typography variant="body2" sx={{ mt: 3, alignSelf: "end" }}>
-                Already have an account? {""}
-                <Link variant="subtitle2" component={RouterLink} to="/signin">
-                  Login
-                </Link>
-              </Typography>
-            )}
-
-            {!smUp && (
-              <Typography variant="body2" sx={{ mt: 3, textAlign: "center" }}>
-                Already have an account?{" "}
-                <Link variant="subtitle2" to="/signin" component={RouterLink}>
-                  Login
-                </Link>
-              </Typography>
-            )}
+            <Typography
+              variant="body2"
+              sx={{ mb: 0, mt: 5, cursor: "pointer", color: "#202020" }}
+            >
+              <Link variant="subtitle2" href="signin">
+                Go back
+              </Link>
+            </Typography>
+            {isNavigate ? 
+            <Typography
+              variant="body2"
+              sx={{ mb: 0, mt: 5, cursor: "pointer", textAlign: 'center' }}
+            >
+              <Link variant="subtitle2" href="signin" sx={{color: 'black'}}>
+                Navigating to Signin page...
+              </Link>
+            </Typography>
+            : null
+            }
           </ContentStyle>
         </Container>
       </RootStyle>

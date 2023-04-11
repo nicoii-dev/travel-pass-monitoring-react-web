@@ -35,7 +35,7 @@ export default function Page404() {
 
           <Box
             component="img"
-            src="/static/illustration_404.svg"
+            src="/assets/icons/error-404.png"
             sx={{ height: 260, mx: 'auto', my: { xs: 5, sm: 10 } }}
           />
 

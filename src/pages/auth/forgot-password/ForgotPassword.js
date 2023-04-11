@@ -27,10 +27,10 @@ import { setLocalStorageItem } from "../../../utils/setLocalStorage";
 import { USER } from "../../../utils/constants/user";
 
 // schema
-import { LoginSchema } from "../../../yup-schema/loginSchema";
+import { ForgotPasswordSchema } from "../../../yup-schema/forgotPasswordSchema";
 
 // api
-import userApi from "../../../services/userApi";
+import forgotPasswordApi from "../../../services/forgotPasswordApi";
 
 // ----------------------------------------------------------------------
 
@@ -55,18 +55,17 @@ const ContentStyle = styled("div")(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function Signin() {
+export default function ForgotPassword() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const { login } = userApi;
+  const { forgotPassword } = forgotPasswordApi;
 
   const defaultValues = {
     email: "",
-    password: "",
   };
 
   const methods = useForm({
-    resolver: yupResolver(LoginSchema),
+    resolver: yupResolver(ForgotPasswordSchema),
     defaultValues,
   });
 
@@ -75,22 +74,22 @@ export default function Signin() {
     formState: { isSubmitting },
   } = methods;
 
-  const { mutate: loginUser, isLoading: loginUserLoading } = useMutation(
-    (payload) => login(payload),
+  const { mutate: resetUser, isLoading: forgotLoading } = useMutation((payload) => forgotPassword(payload),
     {
-      onSuccess: (data) => {
-        setLocalStorageItem(USER.ACCESS_TOKEN, data.data.token, 9999);
-        setLocalStorageItem(USER.USER_DATA, data.data.user, 9999);
-        navigate(`/`);
+      onSuccess: (result) => {
+        if(result?.data?.status == 422) {
+            return toast.error(result.data.message);
+           }
+           toast.success(result.data.message);
       },
       onError: (error) => {
-        toast.error(error.response.data.message);
+        toast.error('Something went wrong.');
       },
     }
   );
 
   const onSubmit = async (data) => {
-    loginUser(data);
+    resetUser(data);
     // navigate('/dashboard')
   };
 
@@ -126,61 +125,17 @@ export default function Signin() {
           </Box>
 
           <ContentStyle>
-            <Typography variant="h5" gutterBottom sx={{ color: "#202020" }}>
-              Welcome to
-            </Typography>
             <Typography variant="h4" gutterBottom sx={{ color: "#202020" }}>
-              Travel Pass Monitoring App
+              Forgot Password?
             </Typography>
 
             <Typography sx={{ color: "#202020", mb: 5 }}>
-              Enter your credentials below.
+              Enter your email below.
             </Typography>
 
             <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-              <Stack spacing={2}>
+              <Stack spacing={3}>
                 <RHFTextField name="email" label="Email address" />
-
-                <RHFTextField
-                  name="password"
-                  label="Password"
-                  type={showPassword ? "text" : "password"}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={() => setShowPassword(!showPassword)}
-                          edge="end"
-                        >
-                          <Iconify
-                            icon={
-                              showPassword ? "eva:eye-fill" : "eva:eye-off-fill"
-                            }
-                          />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Stack>
-
-              <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="flex-end"
-                sx={{ my: 2 }}
-              >
-                <Link
-                  rel="noopener"
-                  variant="subtitle2"
-                  underline="hover"
-                  sx={{ cursor: "pointer" }}
-                  onClick={() => {
-                    navigate("/forgot-password");
-                  }}
-                >
-                  Forgot password?
-                </Link>
               </Stack>
 
               <LoadingButton
@@ -188,10 +143,10 @@ export default function Signin() {
                 size="large"
                 type="submit"
                 variant="contained"
-                loading={loginUserLoading}
+                loading={forgotLoading}
                 sx={{ marginTop: 5 }}
               >
-                Login
+                Send Password Reset Link
               </LoadingButton>
             </FormProvider>
 
