@@ -1,33 +1,47 @@
-import PropTypes from 'prop-types';
-import { useEffect } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import PropTypes from "prop-types";
+import { useEffect } from "react";
+import { Link as RouterLink, useLocation } from "react-router-dom";
 // material
-import { styled } from '@mui/material/styles';
-import { Box, Link, Button, Drawer, Typography, Avatar, Stack } from '@mui/material';
+import { styled } from "@mui/material/styles";
+import {
+  Box,
+  Link,
+  Button,
+  Drawer,
+  Typography,
+  Avatar,
+  Stack,
+} from "@mui/material";
 // hooks
-import useResponsive from '../hooks/useResponsive';
+import useResponsive from "../hooks/useResponsive";
 // components
-import Logo from '../components/Logo';
-import Scrollbar from '../components/Scrollbar';
-import NavSection from '../components/NavSection';
+import Logo from "../components/Logo";
+import Scrollbar from "../components/Scrollbar";
+import NavSection from "../components/NavSection";
 //
-import navConfig from './NavConfig';
-import { getLocalStorageItem } from '../utils/getLocalStorage';
-// import TreasurerNav from './TreasurerNav';
+import { getLocalStorageItem } from "../utils/getLocalStorage";
+import { USER } from "../utils/constants/user";
+
+// navigations
+import AdminNav from "./nav-config.js/AdminNav";
+import PoliceNav from "./nav-config.js/PoliceNav";
+import MedicalStaffNav from "./nav-config.js/MedicalStaffNav";
+import UserNav from "./nav-config.js/UserNav";
+import { isMobile } from "react-device-detect";
 // ----------------------------------------------------------------------
 
 const DRAWER_WIDTH = 280;
 
-const RootStyle = styled('div')(({ theme }) => ({
-  [theme.breakpoints.up('lg')]: {
+const RootStyle = styled("div")(({ theme }) => ({
+  [theme.breakpoints.up("lg")]: {
     flexShrink: 0,
     width: DRAWER_WIDTH,
   },
 }));
 
-const AccountStyle = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
+const AccountStyle = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
   padding: theme.spacing(2, 2.5),
   borderRadius: Number(theme.shape.borderRadius) * 1.5,
   backgroundColor: theme.palette.grey[500_12],
@@ -40,13 +54,13 @@ DashboardSidebar.propTypes = {
   onCloseSidebar: PropTypes.func,
 };
 
-const adminAvatar = '/static/mock-images/avatars/admin.png';
-const treasurerAvatar = '/static/mock-images/avatars/cfo.png';
+const adminAvatar = "/static/mock-images/avatars/admin.png";
+const treasurerAvatar = "/static/mock-images/avatars/cfo.png";
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
-  const userData = getLocalStorageItem('userData');
-  const isDesktop = useResponsive('up', 'lg');
+  const userData = getLocalStorageItem(USER.USER_DATA);
+  const isDesktop = useResponsive("up", "lg");
 
   useEffect(() => {
     if (isOpenSidebar) {
@@ -54,63 +68,73 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
+  console.log(userData.role)
+  const navConfigHandler = () => {
+    switch (userData.role) {
+      case "admin":
+        return AdminNav;
+      case "police":
+        return PoliceNav;
+      case "medicalStaff":
+        return MedicalStaffNav;
+      case "user":
+        return UserNav;
+
+      default:
+        break;
+    }
+  };
+
+  console.log(navConfigHandler());
 
   const renderContent = (
     <Scrollbar
       sx={{
         height: 1,
-        '& .simplebar-content': { height: 1, display: 'flex', flexDirection: 'column' },
+        "& .simplebar-content": {
+          height: 1,
+          display: "flex",
+          flexDirection: "column",
+        },
+        backgroundColor: '#FFD700'
       }}
     >
-      <Box sx={{ px: 2.5, py: 3, display: 'inline-flex' }}>
-        <Logo />
+      <Box sx={{ display: isMobile ? "flex" : "inline-flex", justifyContent: 'center', mt: 5, mb: 5}}>
+        <Avatar
+          alt="Remy Sharp"
+          src="assets/icons/iligan-icon.jpg"
+          sx={{ width: 100, height: 100 }}
+        />
       </Box>
 
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none" component={RouterLink} to="#">
           <AccountStyle>
-            <Avatar src={userData?.role === 'admin' ? adminAvatar : treasurerAvatar} alt="photoURL" />
+            <Avatar
+              src={userData?.role === "admin" ? adminAvatar : treasurerAvatar}
+              alt="photoURL"
+            />
             <Box sx={{ ml: 2 }}>
-              <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {`${userData?.first_name?.charAt(0).toUpperCase() + userData?.first_name?.slice(1)}
+              <Typography variant="subtitle2" sx={{ color: "text.primary" }}>
+                {`${
+                  userData?.first_name?.charAt(0).toUpperCase() +
+                  userData?.first_name?.slice(1)
+                }
                   ${userData?.middle_name?.charAt(0).toUpperCase()}.
-                  ${userData?.last_name?.charAt(0).toUpperCase() + userData?.last_name?.slice(1)}`}
+                  ${
+                    userData?.last_name?.charAt(0).toUpperCase() +
+                    userData?.last_name?.slice(1)
+                  }`}
               </Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              <Typography variant="body2" sx={{ color: "text.secondary" }}>
                 {userData?.role?.toUpperCase()}
               </Typography>
             </Box>
           </AccountStyle>
         </Link>
       </Box>
-
-      {/* <NavSection navConfig={navConfig} /> */}
-      <NavSection navConfig={userData?.role === 'admin' ? navConfig : null} />
-
+      <NavSection navConfig={navConfigHandler()} />
       <Box sx={{ flexGrow: 1 }} />
-
-      {/* <Box sx={{ px: 2.5, pb: 3, mt: 10 }}>
-        <Stack alignItems="center" spacing={3} sx={{ pt: 5, borderRadius: 2, position: 'relative' }}>
-          <Box
-            component="img"
-            src="/static/illustrations/illustration_avatar.png"
-            sx={{ width: 100, position: 'absolute', top: -50 }}
-          />
-
-          <Box sx={{ textAlign: 'center' }}>
-            <Typography gutterBottom variant="h6">
-              Get more?
-            </Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              From only $69
-            </Typography>
-          </Box>
-
-          <Button href="https://material-ui.com/store/items/minimal-dashboard/" target="_blank" variant="contained">
-            Upgrade to Pro
-          </Button>
-        </Stack>
-      </Box> */}
     </Scrollbar>
   );
 
@@ -135,8 +159,8 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
           PaperProps={{
             sx: {
               width: DRAWER_WIDTH,
-              bgcolor: 'background.default',
-              borderRightStyle: 'dashed',
+              bgcolor: "background.default",
+              borderRightStyle: "dashed",
             },
           }}
         >

@@ -1,11 +1,11 @@
 // component
-import Iconify from '../components/Iconify';
+import Iconify from '../../components/Iconify';
 
 // ----------------------------------------------------------------------
 
 const getIcon = (name) => <Iconify icon={name} width={22} height={22} />;
 
-const navConfig = [
+const UserNav = [
   {
     title: 'dashboard',
     path: '/dashboard',
@@ -65,4 +65,4 @@ const navConfig = [
   },
 ];
 
-export default navConfig;
+export default UserNav;

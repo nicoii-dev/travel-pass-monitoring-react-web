@@ -13,18 +13,73 @@ import Page404 from "../pages/Page404";
 import ForgotPassword from "../pages/auth/forgot-password/ForgotPassword";
 import EmailVerify from "../pages/EmailVerify";
 import ResetPassword from "../pages/auth/reset-password/ResetPassword";
+import User from "../pages/users/User";
+import CreateUser from "../pages/users/CreateUser";
+import ViewUser from "../pages/users/ViewUser";
 
 const MainRoute = () => {
   const location = useLocation();
   const userData = getLocalStorageItem(USER.USER_DATA);
   const token = getLocalStorageItem(USER.ACCESS_TOKEN);
-
-  if (token) {
+  console.log(userData)
+  if (token && userData.role === 'admin') {
     return (
       <>
         <Routes>
           <Route path="/" element={<DashboardLayout />}>
             <Route path="/" element={<HomePage />} />
+            <Route path="manage-lsi" element={<User />} />
+            <Route path="medical-reservations" element={<User />} />
+            <Route path="travel-pass-applications" element={<User />} />
+            <Route path="user" element={<User />} />
+            <Route path="user/create" element={<CreateUser />} />
+            <Route path="user/view" element={<ViewUser />} />
+            <Route path="reports" element={<User />} />
+            <Route path="404" element={<Page404 />} />
+            <Route
+              path="*"
+              element={
+                <Navigate to="/404" state={{ from: location }} replace />
+              }
+            />
+          </Route>
+        </Routes>
+      </>
+    );
+  }
+
+  if (token && userData.role === 'medicalStaff') {
+    return (
+      <>
+        <Routes>
+          <Route path="/" element={<DashboardLayout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="manage-lsi" element={<User />} />
+            <Route path="medical-appointments" element={<User />} />
+            <Route path="schedule" element={<User />} />
+            <Route path="profile" element={<User />} />
+            <Route path="404" element={<Page404 />} />
+            <Route
+              path="*"
+              element={
+                <Navigate to="/404" state={{ from: location }} replace />
+              }
+            />
+          </Route>
+        </Routes>
+      </>
+    );
+  }
+
+  if (token && userData.role === 'police') {
+    return (
+      <>
+        <Routes>
+          <Route path="/" element={<DashboardLayout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="manage-lsi" element={<User />} />
+            <Route path="travel-pass-applications" element={<User />} />
+            <Route path="profile" element={<User />} />
             <Route path="404" element={<Page404 />} />
             <Route
               path="*"

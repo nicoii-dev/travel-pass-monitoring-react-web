@@ -110,7 +110,7 @@ export default function Signup() {
       first_name: data.firstName,
       middle_name: data.middleName,
       last_name: data.lastName,
-      role: "lsi",
+      role: "user",
       email: data.email,
       password: data.password,
       password_confirmation: data.confirmPassword,

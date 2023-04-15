@@ -48,13 +48,13 @@ function NavItem({ item, active }) {
   };
 
   const activeRootStyle = {
-    color: 'primary.main',
+    color: 'black',
     fontWeight: 'fontWeightMedium',
     bgcolor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
   };
 
   const activeSubStyle = {
-    color: 'text.primary',
+    color: 'black',
     fontWeight: 'fontWeightMedium',
   };
 
