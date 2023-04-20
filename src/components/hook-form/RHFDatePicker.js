@@ -3,35 +3,62 @@ import PropTypes from "prop-types";
 import { useFormContext, Controller } from "react-hook-form";
 // @mui
 import { TextField } from "@mui/material";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import dayjs from "dayjs";
 
 // ----------------------------------------------------------------------
 
-RHFTextField.propTypes = {
+RHFDatePicker.propTypes = {
   name: PropTypes.string,
 };
 
-export default function RHFTextField({ name, ...other }) {
+export default function RHFDatePicker({ name, ...other }) {
   const { control } = useFormContext();
 
   return (
-    <Controller
-      name={name}
-      control={control}
-      render={({ field, fieldState: { error } }) => (
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker
-            // inputFormat="MM/DD/YYYY"
-            label={other.label || "Date of Birth"}
-            // maxDate={new Date()}
-            value={field.value}
-            onChange={field.onChange}
-            onError={error}
-            renderInput={(params) => <TextField {...params} />}
-          />
-        </LocalizationProvider>
-      )}
-    />
+    <>
+    {other?.type === 'date' ?
+        <Controller
+            name={name}
+            control={control}
+            render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DesktopDatePicker
+                        maxDate={dayjs(new Date())}
+                        value={dayjs(value)}
+                        onChange={onChange}
+                        renderInput={(params) => <TextField {...params} />}
+                        {...other}
+                    />
+                </LocalizationProvider>
+            )}
+        />
+        :
+        <Controller
+            name={name}
+            control={control}
+            render={({ field, fieldState: { error } }) => (
+                <LocalizationProvider dateAdapter={AdapterMoment}>
+                    <TextField
+                        {...field}
+                        fullWidth
+                        error={!!error}
+                        type="time"
+                        sx={{ width: 250 }}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        onChange={field.onChange}
+                        {...other}
+                    />
+                </LocalizationProvider>
+            )}
+        />
+    }
+</>
   );
 }

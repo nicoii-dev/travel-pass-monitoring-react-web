@@ -12,14 +12,14 @@ const PoliceNav = [
     icon: getIcon('eva:pie-chart-2-fill'),
   },
   {
-    title: 'Manage SLI',
-    path: '/manage-lsi',
+    title: 'Locally Stranded Individual',
+    path: '/locally-stranded-individual',
     icon: getIcon('mdi:account-warning'),
   },
   {
     title: 'Travel Pass Applications',
     path: '/travel-pass-applications',
-    icon: getIcon('healthicons:community-meeting'),
+    icon: getIcon('heroicons:ticket'),
   },
 ];
 

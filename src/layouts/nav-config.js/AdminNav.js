@@ -12,19 +12,24 @@ const AdminNav = [
     icon: getIcon('eva:pie-chart-2-fill'),
   },
   {
-    title: 'Manage LSI',
-    path: '/manage-lsi',
+    title: 'Locally Stranded Individual',
+    path: '/locally-stranded-individual',
     icon: getIcon('mdi:account-warning'),
   },
   {
     title: 'Medical Reservations',
     path: '/medical-reservations',
-    icon: getIcon('healthicons:community-meeting'),
+    icon: getIcon('material-symbols:medical-information-outline'),
   },
   {
     title: 'Travel Pass Applications',
     path: '/travel-pass-applications',
-    icon: getIcon('material-symbols:receipt-long'),
+    icon: getIcon('heroicons:ticket'),
+  },
+  {
+    title: 'Schedules',
+    path: '/schedules',
+    icon: getIcon('grommet-icons:schedules'),
   },
   {
     title: 'Users',

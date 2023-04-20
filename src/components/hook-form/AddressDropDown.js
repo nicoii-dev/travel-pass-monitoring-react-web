@@ -6,11 +6,11 @@ import { TextField } from "@mui/material";
 
 // ----------------------------------------------------------------------
 
-RHFDropDown.propTypes = {
+AddressDropDown.propTypes = {
   name: PropTypes.string,
 };
 
-export default function RHFDropDown({ name, ...other }) {
+export default function AddressDropDown({ name, ...other }) {
   const { control } = useFormContext();
 
   return (
@@ -28,8 +28,10 @@ export default function RHFDropDown({ name, ...other }) {
           SelectProps={{ native: true }}
           variant="outlined"
           value={value}
+          defaultValue={other.defaultValue}
           onChange={(event) => {
             onChange(event.target.value);
+            other?.onChangeFunc(event.target.value)
           }}
           onBlur={onBlur}
           error={!!error}

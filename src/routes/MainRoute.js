@@ -14,8 +14,10 @@ import ForgotPassword from "../pages/auth/forgot-password/ForgotPassword";
 import EmailVerify from "../pages/EmailVerify";
 import ResetPassword from "../pages/auth/reset-password/ResetPassword";
 import User from "../pages/users/User";
-import CreateUser from "../pages/users/CreateUser";
-import ViewUser from "../pages/users/ViewUser";
+import CreateUser from "../pages/users/create/CreateUser";
+import ViewUser from "../pages/users/view/ViewUser";
+import Schedules from "../pages/schedules/Schedules";
+import CreateSchedule from "../pages/schedules/CreateSchedules";
 
 const MainRoute = () => {
   const location = useLocation();
@@ -28,12 +30,16 @@ const MainRoute = () => {
         <Routes>
           <Route path="/" element={<DashboardLayout />}>
             <Route path="/" element={<HomePage />} />
-            <Route path="manage-lsi" element={<User />} />
+            <Route path="/dashboard" element={<HomePage />} />
+            <Route path="locally-stranded-individual" element={<User />} />
             <Route path="medical-reservations" element={<User />} />
             <Route path="travel-pass-applications" element={<User />} />
+            <Route path="schedules" element={<Schedules />} />
+            <Route path="schedules/create" element={<CreateSchedule />} />
+            <Route path="schedules/view/:id" element={<ViewUser />} />
             <Route path="user" element={<User />} />
             <Route path="user/create" element={<CreateUser />} />
-            <Route path="user/view" element={<ViewUser />} />
+            <Route path="user/view/:id" element={<ViewUser />} />
             <Route path="reports" element={<User />} />
             <Route path="404" element={<Page404 />} />
             <Route
@@ -54,7 +60,7 @@ const MainRoute = () => {
         <Routes>
           <Route path="/" element={<DashboardLayout />}>
             <Route path="/" element={<HomePage />} />
-            <Route path="manage-lsi" element={<User />} />
+            <Route path="locally-stranded-individual" element={<User />} />
             <Route path="medical-appointments" element={<User />} />
             <Route path="schedule" element={<User />} />
             <Route path="profile" element={<User />} />
@@ -77,7 +83,7 @@ const MainRoute = () => {
         <Routes>
           <Route path="/" element={<DashboardLayout />}>
             <Route path="/" element={<HomePage />} />
-            <Route path="manage-lsi" element={<User />} />
+            <Route path="locally-stranded-individual" element={<User />} />
             <Route path="travel-pass-applications" element={<User />} />
             <Route path="profile" element={<User />} />
             <Route path="404" element={<Page404 />} />
@@ -105,10 +111,10 @@ const MainRoute = () => {
       </Route>
       <Route path="email-verify" element={<EmailVerify />} />
       <Route path="404" element={<Page404 />} />
-      {/* <Route
+      <Route
         path="*"
         element={<Navigate to="/404" state={{ from: location }} replace />}
-      /> */}
+      />
     </Routes>
   );
 };

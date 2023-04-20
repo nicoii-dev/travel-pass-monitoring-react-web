@@ -53,9 +53,10 @@ DashboardSidebar.propTypes = {
   isOpenSidebar: PropTypes.bool,
   onCloseSidebar: PropTypes.func,
 };
-
-const adminAvatar = "/static/mock-images/avatars/admin.png";
-const treasurerAvatar = "/static/mock-images/avatars/cfo.png";
+const adminAvatar = "/assets/icons/admin.png";
+const policeAvatar = "/assets/icons/policeman.png";
+const medicalStaffAvatar = "/assets/icons/nurse.png";
+const userAvatar = "/assets/icons/man.png";
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
@@ -85,7 +86,21 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
     }
   };
 
-  console.log(navConfigHandler());
+  const avatarConfig = () => {
+    switch (userData.role) {
+      case "admin":
+        return adminAvatar;
+      case "police":
+        return policeAvatar;
+      case "medicalStaff":
+        return medicalStaffAvatar;
+      case "user":
+        return userAvatar;
+
+      default:
+        break;
+    }
+  };
 
   const renderContent = (
     <Scrollbar
@@ -111,7 +126,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
         <Link underline="none" component={RouterLink} to="#">
           <AccountStyle>
             <Avatar
-              src={userData?.role === "admin" ? adminAvatar : treasurerAvatar}
+              src={avatarConfig()}
               alt="photoURL"
             />
             <Box sx={{ ml: 2 }}>

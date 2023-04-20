@@ -11,7 +11,9 @@ export default {
   login: (payload) => apiService.post(`/auth/login`, payload),
   logout: () => apiService.post(`/auth/logout`, null),
   getUser: () => apiService.get(`/users`),
-  updateUser: (id, payload) => apiService.put(`/update-user/${id}`, payload),
+  createUser: (payload) => apiService.post(`/users/create`, payload),
+  viewUser: (id) => apiService.post(`/users/view/${id}`),
+  updateUser: (id, payload) => apiService.post(`/users/update/${id}`, payload),
   updatePassword: (payload) => apiService.post(`/change-password`, payload),
 
   verifyEmail: (token, payload) => {

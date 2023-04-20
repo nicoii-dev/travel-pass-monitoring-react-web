@@ -36,11 +36,7 @@ const MainStyle = styled("div")(({ theme }) => ({
 
 export default function DashboardLayout() {
   const [open, setOpen] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const tokenData = getLocalStorageItem("userToken");
-  // console.log(location)
-  // if(tokenData !== null)
+
   return (
     <RootStyle>
       <DashboardNavbar onOpenSidebar={() => setOpen(true)} />

@@ -38,7 +38,7 @@ export default function User() {
     data: userData,
     status: userStatus,
     isFetching: userIsFetching,
-  } = useQuery(['get-users'], () => getUser(), {
+  } = useQuery(['get-all-users'], () => getUser(), {
     retry: 3, // Will retry failed requests 10 times before displaying an error
   });
 
@@ -100,7 +100,8 @@ export default function User() {
   }, [userStatus, userIsFetching]);
 
   const setUserHandler = async (data) => {
-    navigate('/user/view');
+    console.log(data)
+    navigate(`/user/view/${data.id}`);
   };
 
   const { mutate: Delete, isLoading: isLoad } = useMutation((payload) => deleteUser(payload), {
@@ -130,7 +131,7 @@ export default function User() {
             { id: 'middleName', label: 'Middle name', align: false },
             { id: 'lastName', label: 'Last name', align: false },
             { id: 'dob', label: 'Date of Birth', align: false },
-            { id: 'gender', label: 'Gender', align: false },
+            // { id: 'gender', label: 'Gender', align: false },
             { id: 'phoneNumber', label: 'Phone number', align: false },
             { id: 'email', label: 'Email', align: false },
             { id: 'role', label: 'Role', align: 'center' },

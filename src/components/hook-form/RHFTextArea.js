@@ -6,11 +6,11 @@ import { TextareaAutosize, Typography, Box } from "@mui/material";
 
 // ----------------------------------------------------------------------
 
-RHFTextField.propTypes = {
+RHFTextArea.propTypes = {
   name: PropTypes.string,
 };
 
-export default function RHFTextField({ name, ...other }) {
+export default function RHFTextArea({ name, ...other }) {
   const { control } = useFormContext();
 
   return (

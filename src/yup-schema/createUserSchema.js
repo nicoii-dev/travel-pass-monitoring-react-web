@@ -12,11 +12,12 @@ export const CreateUserSchema = yup
       .string()
       .email('Invalid email format')
       .required('Please enter your Email'),
-    password: yup.string().required('Please enter your Password').min(6, "Password must be atleast 6 characters."),
-    confirmPassword: yup
-      .string()
-      .required('Please enter your Password')
-      .oneOf([yup.ref('password'), null], 'Passwords must match'),
     role: yup.string().required('Role is required'),
+    region: yup.string().required('Region is required'),
+    province: yup.string().required('Province is required'),
+    city: yup.string().required('City is required'),
+    barangay: yup.string().required('Barangay is required'),
+    street: yup.string().required('Street is required'),
+    zipcode: yup.string().required('Zip Code is required')
   })
   .required();

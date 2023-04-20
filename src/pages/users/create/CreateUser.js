@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import React, { useState } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { useMutation, useQueryClient } from 'react-query';
-import { toast } from 'react-toastify';
-import moment from 'moment/moment';
+import { useMutation, useQueryClient } from "react-query";
+import { toast } from "react-toastify";
+import moment from "moment";
 // @mui
 import { styled } from "@mui/material/styles";
 import {
@@ -12,24 +12,30 @@ import {
   IconButton,
   Stack,
   InputAdornment,
-  Box
+  Box,
 } from "@mui/material";
-import { LoadingButton } from '@mui/lab';
+import { LoadingButton } from "@mui/lab";
+import dayjs from "dayjs";
 // form
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 // components
-import Page from "../../components/Page";
-import Iconify from "../../components/Iconify";
-import { FormProvider, RHFTextField } from "../../components/hook-form";
+import Page from "../../../components/Page";
+import Iconify from "../../../components/Iconify";
+import {
+  FormProvider,
+  RHFTextField,
+  RHFDropDown,
+  RHFDatePicker,
+} from "../../../components/hook-form";
 
 // api
-import userApi from '../../services/userApi';
+import userApi from "../../../services/userApi";
 
 // schema
-import { CreateUserSchema } from '../../yup-schema/createUserSchema';
-
+import { CreateUserSchema } from "../../../yup-schema/createUserSchema";
+import CreateCurrentAddress from "./CreateCurrentAddress";
 
 // ----------------------------------------------------------------------
 
@@ -41,42 +47,51 @@ const RootStyle = styled("div")(({ theme }) => ({
 }));
 
 const ContentStyle = styled("div")(({ theme }) => ({
-  maxWidth: "65%",
+  maxWidth: "100%",
   margin: "auto",
   display: "flex",
   flexDirection: "column",
   padding: theme.spacing(5, 5),
   marginTop: 50,
-  backgroundColor: '#F0ECCF'
+  borderRadius: 10,
+  backgroundColor: "#F0ECCF",
 }));
 
 // ----------------------------------------------------------------------
 const genderData = [
-  {value: 'male', label: 'Male'},
-  {value: 'female', label: 'Female'}
-]
+  { value: "male", label: "Male" },
+  { value: "female", label: "Female" },
+];
+
+const statusData = [
+  { value: "1", label: "Activated" },
+  { value: "0", label: "Deactivated" },
+];
 
 const positionData = [
-  {value: 'police', label: 'Police'},
-  {value: 'medicalStaff', label: 'Medical Staff'},
-  {value: 'admin', label: 'Admin'},
-]
+  { value: "police", label: "Police" },
+  { value: "medicalStaff", label: "Medical Staff" },
+  { value: "admin", label: "Admin" },
+];
 
 export default function CreateUser() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { createUser } = userApi;
 
   const defaultValues = {
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    dob: new Date(),
+    firstName: "aa",
+    middleName: "bb",
+    lastName: "cc",
+    dob: dayjs(new Date()),
     gender: "male",
-    role: "enforcer",
+    phoneNumber: "09354135541",
+    role: "admin",
+    status: 1,
+    region: 0,
+    province: "",
+    city: "",
+    barangay: "",
   };
 
   const methods = useForm({
@@ -87,38 +102,47 @@ export default function CreateUser() {
   const {
     handleSubmit,
     formState: { isSubmitting },
+    setValue,
   } = methods;
 
-  const { mutate: CreateUser, isLoading: isLoad } = useMutation(
+  const { mutate: CreateUser, isLoading: isCreateLoading } = useMutation(
     (payload) => createUser(payload),
     {
       onSuccess: (data) => {
         queryClient.invalidateQueries(["get-all-users"]);
         toast.success("Created successfully");
-        setIsLoading(true);
         navigate(-1);
       },
       onError: (data) => {
         console.log(data);
         toast.error(data.response.data.message);
-        setIsLoading(false);
       },
     }
   );
 
   const onSubmit = async (data) => {
-    console.log(data);
-    setIsLoading(true);
     const payload = {
       first_name: data.firstName,
       middle_name: data.middleName,
       last_name: data.lastName,
       gender: data.gender,
       phone_number: data.phoneNumber,
-      dob: moment(data.dob).format("MM/DD/YYYY"),
+      dob: moment(data.dob).format("YYYY-MM-DD"),
       role: data.role,
+      status: data.status,
       email: data.email,
-      password: data.confirmPassword,
+      current_street: data.street,
+      current_barangay: data.barangay,
+      current_city: data.city,
+      current_province: data.province,
+      current_region: data.region,
+      current_zipcode: data.zipcode,
+      permanent_street: data.street,
+      permanent_barangay: data.barangay,
+      permanent_city: data.city,
+      permanent_province: data.province,
+      permanent_region: data.region,
+      permanent_zipcode: data.zipcode,
     };
     await CreateUser(payload);
   };
@@ -128,15 +152,13 @@ export default function CreateUser() {
       <RootStyle>
         <Container>
           <ContentStyle>
-            <div style={{ padding: 5, zIndex: 9999 }}>
-              <Tooltip title="View">
-                <IconButton onClick={() => navigate(-1)}>
-                  <Iconify
-                    icon="ion:arrow-back-circle"
-                    sx={{ width: 30, height: 30 }}
-                  />
-                </IconButton>
-              </Tooltip>
+            <div style={{ padding: 5, zIndex: 0 }}>
+              <IconButton onClick={() => navigate(-1)}>
+                <Iconify
+                  icon="ion:arrow-back-circle"
+                  sx={{ width: 30, height: 30 }}
+                />
+              </IconButton>
               <Typography
                 variant="h4"
                 gutterBottom
@@ -154,10 +176,9 @@ export default function CreateUser() {
                 </Stack>
 
                 <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                  <RHFTextField
+                  <RHFDropDown
                     name="gender"
                     label="Gender"
-                    inputType="dropDown"
                     dropDownData={genderData}
                   />
                   <RHFTextField
@@ -168,68 +189,27 @@ export default function CreateUser() {
                 </Stack>
 
                 <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                  <RHFTextField
+                  <RHFDatePicker
                     name="dob"
                     label="Date of Birth"
-                    inputType="datePicker"
+                    type="date"
+                    sx={{ width: 500 }}
                   />
-                  <RHFTextField
+                  <RHFDropDown
                     name="role"
                     label="Role"
-                    inputType="dropDown"
                     dropDownData={positionData}
+                  />
+                  <RHFDropDown
+                    name="status"
+                    label="Status"
+                    dropDownData={statusData}
                   />
                 </Stack>
 
                 <RHFTextField name="email" label="Email address" />
 
-                <RHFTextField
-                  name="password"
-                  label="Password"
-                  type={showPassword ? "text" : "password"}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          edge="end"
-                          onClick={() => setShowPassword(!showPassword)}
-                        >
-                          <Iconify
-                            icon={
-                              showPassword ? "eva:eye-fill" : "eva:eye-off-fill"
-                            }
-                          />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-
-                <RHFTextField
-                  name="confirmPassword"
-                  label="Confirm password"
-                  type={showConfirmPassword ? "text" : "password"}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          edge="end"
-                          onClick={() =>
-                            setShowConfirmPassword(!showConfirmPassword)
-                          }
-                        >
-                          <Iconify
-                            icon={
-                              showConfirmPassword
-                                ? "eva:eye-fill"
-                                : "eva:eye-off-fill"
-                            }
-                          />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
+                <CreateCurrentAddress setValue={setValue} />
 
                 <Stack direction="row" spacing={4}>
                   <Box width="100%">
@@ -237,7 +217,7 @@ export default function CreateUser() {
                       fullWidth
                       size="large"
                       variant="contained"
-                      loading={isLoading}
+                      loading={isCreateLoading}
                       type="submit"
                     >
                       Create

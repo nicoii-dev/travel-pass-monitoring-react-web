@@ -12,19 +12,19 @@ const MedicalStaffNav = [
     icon: getIcon('eva:pie-chart-2-fill'),
   },
   {
-    title: 'Manage SLI',
-    path: '/manage-lsi',
+    title: 'Locally Stranded Individual',
+    path: '/locally-stranded-individual',
     icon: getIcon('mdi:account-warning'),
   },
   {
     title: 'Medical Appointments',
     path: '/medical-appointments',
-    icon: getIcon('healthicons:community-meeting'),
+    icon: getIcon('material-symbols:medical-information-outline'),
   },
   {
     title: 'Schedules',
-    path: '/schedule',
-    icon: getIcon('healthicons:community-meeting'),
+    path: '/schedules',
+    icon: getIcon('grommet-icons:schedules'),
   },
 ];
 

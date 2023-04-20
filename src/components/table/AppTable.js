@@ -135,31 +135,16 @@ export default function AppTable({
 
   return (
     <>
-      <Stack
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        mb={5}
-      >
+      <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4" gutterBottom>
           {tableTitle}
         </Typography>
-        {hasButton ? (
-          <Button
-            sx={{
-              backgroundColor: "#F0A04B",
-              color: "#F0ECCF",
-              ":hover": {
-                backgroundColor: "#FFB100",
-              },
-            }}
-            startIcon={<Iconify icon="eva:plus-fill" />}
-            onClick={buttonFunction}
-            variant="contained"
-          >
-            {buttonTitle}
-          </Button>
-        ) : null}
+        {hasButton ?
+        <Button variant="contained" to="#" startIcon={<Iconify icon="eva:plus-fill" />} onClick={buttonFunction}>
+          {buttonTitle}
+        </Button>
+        : null
+        }
       </Stack>
 
       <Card sx={{backgroundColor: '#F0ECCF'}}>

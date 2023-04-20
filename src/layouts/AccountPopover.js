@@ -29,8 +29,10 @@ const MENU_OPTIONS = [
     linkTo: "#",
   },
 ];
-const adminAvatar = "/static/mock-images/avatars/admin.png";
-const treasurerAvatar = "/static/mock-images/avatars/cfo.png";
+const adminAvatar = "/assets/icons/admin.png";
+const policeAvatar = "/assets/icons/policeman.png";
+const medicalStaffAvatar = "/assets/icons/nurse.png";
+const userAvatar = "/assets/icons/man.png";
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
@@ -62,6 +64,22 @@ export default function AccountPopover() {
     setOpen(null);
   };
 
+  const avatarConfig = () => {
+    switch (userData.role) {
+      case "admin":
+        return adminAvatar;
+      case "police":
+        return policeAvatar;
+      case "medicalStaff":
+        return medicalStaffAvatar;
+      case "user":
+        return userAvatar;
+
+      default:
+        break;
+    }
+  };
+
   return (
     <>
       <IconButton
@@ -83,7 +101,7 @@ export default function AccountPopover() {
         }}
       >
         <Avatar
-          src={userData?.role === "admin" ? adminAvatar : treasurerAvatar}
+          src={avatarConfig()}
           alt="photoURL"
         />
       </IconButton>
