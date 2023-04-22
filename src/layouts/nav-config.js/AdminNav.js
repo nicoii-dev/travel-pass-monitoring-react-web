@@ -17,8 +17,8 @@ const AdminNav = [
     icon: getIcon('mdi:account-warning'),
   },
   {
-    title: 'Medical Reservations',
-    path: '/medical-reservations',
+    title: 'Medical Appointments',
+    path: '/medical-appointments',
     icon: getIcon('material-symbols:medical-information-outline'),
   },
   {

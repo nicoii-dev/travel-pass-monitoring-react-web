@@ -194,6 +194,7 @@ export default function CreateUser() {
                     label="Date of Birth"
                     type="date"
                     sx={{ width: 500 }}
+                    maxDate={dayjs(new Date())}
                   />
                   <RHFDropDown
                     name="role"

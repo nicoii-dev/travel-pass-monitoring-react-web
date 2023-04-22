@@ -16,27 +16,36 @@ import ResetPassword from "../pages/auth/reset-password/ResetPassword";
 import User from "../pages/users/User";
 import CreateUser from "../pages/users/create/CreateUser";
 import ViewUser from "../pages/users/view/ViewUser";
+
 import Schedules from "../pages/schedules/Schedules";
 import CreateSchedule from "../pages/schedules/CreateSchedules";
+import ViewSchedule from "../pages/schedules/ViewSchedules";
+import Lsi from "../pages/lsi/LSI";
+import ViewLsi from "../pages/lsi/viewLsi";
+import MedicalSchedules from "../pages/medical-schedules/MedicalSchedules";
+import MedicalAppointments from "../pages/medical-appointments/MedicalAppointments";
+import UserProfile from "../pages/medical-appointments/UserProfile";
 
 const MainRoute = () => {
   const location = useLocation();
   const userData = getLocalStorageItem(USER.USER_DATA);
   const token = getLocalStorageItem(USER.ACCESS_TOKEN);
   console.log(userData)
-  if (token && userData.role === 'admin') {
+  if (token && userData.role.toLowerCase() === 'admin') {
     return (
       <>
         <Routes>
           <Route path="/" element={<DashboardLayout />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/dashboard" element={<HomePage />} />
-            <Route path="locally-stranded-individual" element={<User />} />
-            <Route path="medical-reservations" element={<User />} />
+            <Route path="locally-stranded-individual" element={<Lsi />} />
+            <Route path="locally-stranded-individual/view/:id" element={<ViewLsi />} />
+            <Route path="medical-appointments" element={<MedicalAppointments />} />
+            <Route path="medical-appointments/user/view/:id" element={<UserProfile />} />
             <Route path="travel-pass-applications" element={<User />} />
             <Route path="schedules" element={<Schedules />} />
             <Route path="schedules/create" element={<CreateSchedule />} />
-            <Route path="schedules/view/:id" element={<ViewUser />} />
+            <Route path="schedules/view/:id" element={<ViewSchedule />} />
             <Route path="user" element={<User />} />
             <Route path="user/create" element={<CreateUser />} />
             <Route path="user/view/:id" element={<ViewUser />} />
@@ -54,7 +63,7 @@ const MainRoute = () => {
     );
   }
 
-  if (token && userData.role === 'medicalStaff') {
+  if (token && userData.role.toLowerCase() === 'medicalStaff') {
     return (
       <>
         <Routes>
@@ -77,7 +86,7 @@ const MainRoute = () => {
     );
   }
 
-  if (token && userData.role === 'police') {
+  if (token && userData.role.toLowerCase() === 'police') {
     return (
       <>
         <Routes>
@@ -98,6 +107,30 @@ const MainRoute = () => {
       </>
     );
   }
+
+  if (token && userData.role.toLowerCase() === 'lsi') {
+    return (
+      <>
+        <Routes>
+          <Route path="/" element={<DashboardLayout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="home" element={<HomePage />} />
+            <Route path="profile" element={<User />} />
+            <Route path="medical-schedules" element={<MedicalSchedules />} />
+            <Route path="travel-pass" element={<User />} />
+            <Route path="404" element={<Page404 />} />
+            <Route
+              path="*"
+              element={
+                <Navigate to="/404" state={{ from: location }} replace />
+              }
+            />
+          </Route>
+        </Routes>
+      </>
+    );
+  }
+
 
   return (
     <Routes>

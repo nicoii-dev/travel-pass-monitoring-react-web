@@ -69,16 +69,16 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
-  console.log(userData.role)
+
   const navConfigHandler = () => {
-    switch (userData.role) {
+    switch (userData.role.toLowerCase()) {
       case "admin":
         return AdminNav;
       case "police":
         return PoliceNav;
       case "medicalStaff":
         return MedicalStaffNav;
-      case "user":
+      case "lsi":
         return UserNav;
 
       default:
@@ -87,14 +87,14 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   };
 
   const avatarConfig = () => {
-    switch (userData.role) {
+    switch (userData.role.toLowerCase()) {
       case "admin":
         return adminAvatar;
       case "police":
         return policeAvatar;
       case "medicalStaff":
         return medicalStaffAvatar;
-      case "user":
+      case "lsi":
         return userAvatar;
 
       default:

@@ -24,21 +24,21 @@ import {
 import dayjs from "dayjs";
 import { LoadingButton } from "@mui/lab";
 // components
-import Page from "../../../components/Page";
-import Iconify from "../../../components/Iconify";
+import Page from "../../components/Page";
+import Iconify from "../../components/Iconify";
 import {
   FormProvider,
   RHFTextField,
   RHFDropDown,
   RHFDatePicker,
-} from "../../../components/hook-form";
-import ViewCurrentAddress from "./ViewCurrentAddress";
+} from "../../components/hook-form";
+import ViewCurrentAddress from "./LsiViewCurrentAddress";
 
 // api
-import userApi from "../../../services/userApi";
+import userApi from "../../services/userApi";
 
 // schema
-import { UpdateUserSchema } from "../../../yup-schema/updateUserSchema";
+import { UpdateUserSchema } from "../../yup-schema/updateUserSchema";
 
 // ----------------------------------------------------------------------
 
@@ -77,7 +77,7 @@ const positionData = [
   { value: "admin", label: "Admin" },
 ];
 
-export default function ViewUser() {
+export default function ViewLsi() {
   const queryClient = useQueryClient();
   const user = useParams();
   const navigate = useNavigate();
@@ -137,7 +137,7 @@ export default function ViewUser() {
           phoneNumber: phone_number,
           gender,
           dob,
-          role,
+          role: role.toUpperCase(),
           status,
           email,
           region: data?.data?.current_address?.region,
@@ -255,32 +255,30 @@ export default function ViewUser() {
                             direction={{ xs: "column", sm: "row" }}
                             spacing={2}
                           >
-                            <RHFTextField name="firstName" label="First name" />
+                            <RHFTextField name="firstName" label="First name" disabled />
                             <RHFTextField
                               name="middleName"
                               label="Middle name"
+                              disabled
                             />
-                            <RHFTextField name="lastName" label="Last name" />
+                            <RHFTextField name="lastName" label="Last name" disabled/>
                           </Stack>
                           <Stack
                             direction={{ xs: "column", sm: "row" }}
                             spacing={2}
                           >
-                            <RHFTextField name="email" label="Email address" />
+                            <RHFTextField name="email" label="Email address" disabled/>
                           </Stack>
                           <Stack
                             direction={{ xs: "column", sm: "row" }}
                             spacing={2}
                           >
-                            <RHFDropDown
-                              name="role"
-                              label="Role"
-                              dropDownData={positionData}
-                            />
+                            <RHFTextField name="role" label="Role" disabled />
                             <RHFDropDown
                               name="status"
                               label="Status"
                               dropDownData={statusData}
+                              disabled
                             />
                           </Stack>
                         </Stack>
@@ -295,17 +293,20 @@ export default function ViewUser() {
                           label="Date of Birth"
                           type="date"
                           sx={{ width: 500 }}
+                          disabled
                         />
                         <RHFDropDown
                           name="gender"
                           label="Gender"
                           inputType="dropDown"
                           dropDownData={genderData}
+                          disabled
                         />
                         <RHFTextField
                           name="phoneNumber"
                           label="Phone Number"
                           type="number"
+                          disabled
                         />
                       </Stack>
 
@@ -314,19 +315,6 @@ export default function ViewUser() {
                         currentAddressData={currentAddressData}
                       />
                     </>
-                    <Stack direction="row" spacing={4}>
-                      <Box width="100%">
-                        <LoadingButton
-                          fullWidth
-                          size="large"
-                          variant="contained"
-                          loading={updateIsLoading}
-                          type="submit"
-                        >
-                          Update
-                        </LoadingButton>
-                      </Box>
-                    </Stack>
                   </Stack>
                 </FormProvider>
 

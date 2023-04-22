@@ -21,22 +21,20 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 // components
-import Page from "../../../components/Page";
-import Iconify from "../../../components/Iconify";
+import Page from "../../components/Page";
+import Iconify from "../../components/Iconify";
 import {
   FormProvider,
   RHFTextField,
   RHFDropDown,
   RHFDatePicker,
-} from "../../../components/hook-form";
+} from "../../components/hook-form";
 
 // api
-import userApi from "../../../services/userApi";
+import schedulesApi from "../../services/schedulesApi";
 
 // schema
-import { CreateUserSchema } from "../../../yup-schema/createUserSchema";
-import CreateCurrentAddress from "./CreateCurrentAddress";
-
+import { ScheduleSchema } from "../../yup-schema/createScheduleSchema";
 // ----------------------------------------------------------------------
 
 const RootStyle = styled("div")(({ theme }) => ({
@@ -47,7 +45,7 @@ const RootStyle = styled("div")(({ theme }) => ({
 }));
 
 const ContentStyle = styled("div")(({ theme }) => ({
-  maxWidth: "100%",
+  maxWidth: "65%",
   margin: "auto",
   display: "flex",
   flexDirection: "column",
@@ -58,44 +56,27 @@ const ContentStyle = styled("div")(({ theme }) => ({
 }));
 
 // ----------------------------------------------------------------------
-const genderData = [
-  { value: "male", label: "Male" },
-  { value: "female", label: "Female" },
-];
 
-const statusData = [
-  { value: "1", label: "Activated" },
-  { value: "0", label: "Deactivated" },
-];
-
-const positionData = [
-  { value: "police", label: "Police" },
-  { value: "medicalStaff", label: "Medical Staff" },
-  { value: "admin", label: "Admin" },
+const timeData = [
+  { value: "1", label: "8AM to 10AM" },
+  { value: "2", label: "10AM to 12PM" },
+  { value: "3", label: "1PM to 3PM" },
+  { value: "4", label: "3PM to 5PM" },
 ];
 
 export default function CreateSchedule() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { createUser } = userApi;
+  const { createSchedules } = schedulesApi;
 
   const defaultValues = {
-    firstName: "aa",
-    middleName: "bb",
-    lastName: "cc",
-    dob: dayjs(new Date()),
-    gender: "male",
-    phoneNumber: "09354135541",
-    role: "admin",
-    status: 1,
-    region: 0,
-    province: "",
-    city: "",
-    barangay: "",
+    scheduleDate: new Date(),
+    scheduleTime: "1",
+    maxLsi: 1,
   };
 
   const methods = useForm({
-    resolver: yupResolver(CreateUserSchema),
+    resolver: yupResolver(ScheduleSchema),
     defaultValues,
   });
 
@@ -105,8 +86,8 @@ export default function CreateSchedule() {
     setValue,
   } = methods;
 
-  const { mutate: CreateUser, isLoading: isCreateLoading } = useMutation(
-    (payload) => createUser(payload),
+  const { mutate: Create, isLoading: isCreateLoading } = useMutation(
+    (payload) => createSchedules(payload),
     {
       onSuccess: (data) => {
         queryClient.invalidateQueries(["get-all-users"]);
@@ -121,30 +102,13 @@ export default function CreateSchedule() {
   );
 
   const onSubmit = async (data) => {
+    console.log(data)
     const payload = {
-      first_name: data.firstName,
-      middle_name: data.middleName,
-      last_name: data.lastName,
-      gender: data.gender,
-      phone_number: data.phoneNumber,
-      dob: moment(data.dob).format("YYYY-MM-DD"),
-      role: data.role,
-      status: data.status,
-      email: data.email,
-      current_street: data.street,
-      current_barangay: data.barangay,
-      current_city: data.city,
-      current_province: data.province,
-      current_region: data.region,
-      current_zipcode: data.zipcode,
-      permanent_street: data.street,
-      permanent_barangay: data.barangay,
-      permanent_city: data.city,
-      permanent_province: data.province,
-      permanent_region: data.region,
-      permanent_zipcode: data.zipcode,
+      schedule_date: moment(data.scheduleDate).format('YYYY-MM-DD'),
+      schedule_time: data.scheduleTime,
+      max_lsi: data.maxLsi,
     };
-    await CreateUser(payload);
+    await Create(payload);
   };
 
   return (
@@ -164,52 +128,30 @@ export default function CreateSchedule() {
                 gutterBottom
                 sx={{ mb: 2, alignSelf: "flex-end" }}
               >
-                Creating User Account
+                Creating Schedule
               </Typography>
             </div>
             <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
               <Stack spacing={3}>
                 <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                  <RHFTextField name="firstName" label="First name" />
-                  <RHFTextField name="middleName" label="Last name" />
-                  <RHFTextField name="lastName" label="Last name" />
-                </Stack>
-
-                <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                  <RHFDropDown
-                    name="gender"
-                    label="Gender"
-                    dropDownData={genderData}
-                  />
-                  <RHFTextField
-                    name="phoneNumber"
-                    label="Phone Number"
-                    type="number"
-                  />
-                </Stack>
-
-                <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                   <RHFDatePicker
-                    name="dob"
-                    label="Date of Birth"
+                    name="scheduleDate"
+                    label="Schedule Date"
                     type="date"
-                    sx={{ width: 500 }}
-                  />
-                  <RHFDropDown
-                    name="role"
-                    label="Role"
-                    dropDownData={positionData}
-                  />
-                  <RHFDropDown
-                    name="status"
-                    label="Status"
-                    dropDownData={statusData}
+                    sx={{ width: "100%" }}
+                    disablePast                  
                   />
                 </Stack>
 
-                <RHFTextField name="email" label="Email address" />
+                <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                  <RHFDropDown
+                    name="scheduleTime"
+                    label="Schedule Time"
+                    dropDownData={timeData}
+                  />
+                </Stack>
 
-                <CreateCurrentAddress setValue={setValue} />
+                <RHFTextField name="maxLsi" label="Max LSI" type="number" />
 
                 <Stack direction="row" spacing={4}>
                   <Box width="100%">

@@ -28,7 +28,6 @@ export default function RHFDatePicker({ name, ...other }) {
             render={({ field: { onChange, onBlur, value }, fieldState: { error } }) => (
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DesktopDatePicker
-                        maxDate={dayjs(new Date())}
                         value={dayjs(value)}
                         onChange={onChange}
                         renderInput={(params) => <TextField {...params} />}

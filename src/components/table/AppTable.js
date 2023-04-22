@@ -15,6 +15,7 @@ import {
   Typography,
   TableContainer,
   TablePagination,
+  CircularProgress,
 } from "@mui/material";
 
 // components
@@ -40,7 +41,7 @@ function getComparator(order, orderBy) {
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-function applySortFilter(array, comparator, query) {
+function applySortFilter(array, comparator, query, TABLE_HEAD) {
   const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -48,10 +49,24 @@ function applySortFilter(array, comparator, query) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(
-      array,
-      (_user) => _user.name.toLowerCase().indexOf(query.toLowerCase()) !== -1
-    );
+    // return filter(
+    //   array,
+    //   (_user) => _user?.name?.toLowerCase().indexOf(query?.toLowerCase()) !== -1
+    // );
+    const filteredRows = array.filter((row) => {
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i < TABLE_HEAD.length; i++) {
+        // check if the column is a string
+        if (typeof row[TABLE_HEAD[i].id] === 'string') {
+          if (row[TABLE_HEAD[i].id].toLowerCase().includes(query.toLowerCase())) {
+            return true;
+          }
+        }
+      }
+      return false;
+    });
+
+    return filteredRows;
   }
   return stabilizedThis.map((el) => el[0]);
 }
@@ -63,6 +78,7 @@ export default function AppTable({
   buttonTitle,
   buttonFunction,
   hasButton = true,
+  isLoading = false
 }) {
   const [page, setPage] = useState(0);
 
@@ -128,7 +144,8 @@ export default function AppTable({
   const filteredData = applySortFilter(
     TABLE_DATA,
     getComparator(order, orderBy),
-    filterName
+    filterName,
+    TABLE_HEAD
   );
 
   const isDataNotFound = filteredData.length === 0;
@@ -211,8 +228,8 @@ export default function AppTable({
               {isDataNotFound && (
                 <TableBody>
                   <TableRow>
-                    <TableCell colSpan={12} sx={{ py: 3 }}>
-                      <SearchNotFound searchQuery={filterName} />
+                    <TableCell colSpan={12} sx={{ py: 3 }} align="center">
+                      {isLoading ? <CircularProgress /> : <SearchNotFound searchQuery={filterName} />}
                     </TableCell>
                   </TableRow>
                 </TableBody>
