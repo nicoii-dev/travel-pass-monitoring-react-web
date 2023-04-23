@@ -24,13 +24,16 @@ import Lsi from "../pages/lsi/LSI";
 import ViewLsi from "../pages/lsi/viewLsi";
 import MedicalSchedules from "../pages/medical-schedules/MedicalSchedules";
 import MedicalAppointments from "../pages/medical-appointments/MedicalAppointments";
-import UserProfile from "../pages/medical-appointments/UserProfile";
+import MedicalApplications from "../pages/medical-applications/MedicalAppilcations";
+import UserProfile from "../pages/medical-appointments/view-update/UserProfile";
+import MedicalUserProfile from "../pages/medical-applications/view/UserProfile";
+import UserProfileViewOnly from "../pages/medical-appointments/view-only/UserProfileViewOnly";
 
 const MainRoute = () => {
   const location = useLocation();
   const userData = getLocalStorageItem(USER.USER_DATA);
   const token = getLocalStorageItem(USER.ACCESS_TOKEN);
-  console.log(userData)
+
   if (token && userData.role.toLowerCase() === 'admin') {
     return (
       <>
@@ -41,7 +44,12 @@ const MainRoute = () => {
             <Route path="locally-stranded-individual" element={<Lsi />} />
             <Route path="locally-stranded-individual/view/:id" element={<ViewLsi />} />
             <Route path="medical-appointments" element={<MedicalAppointments />} />
-            <Route path="medical-appointments/user/view/:id" element={<UserProfile />} />
+            <Route path="medical-appointments/user/view-update/:id" element={<UserProfile />} />
+            <Route path="medical-appointments/user/view-only/:id" element={<UserProfileViewOnly />} />
+            <Route path="medical-applications" element={<MedicalApplications />} />
+            <Route path="medical-applications/create" element={<MedicalUserProfile />} />
+            <Route path="medical-applications/user/view/:id" element={<MedicalUserProfile />} />
+            <Route path="travel-pass-appointments" element={<User />} />
             <Route path="travel-pass-applications" element={<User />} />
             <Route path="schedules" element={<Schedules />} />
             <Route path="schedules/create" element={<CreateSchedule />} />

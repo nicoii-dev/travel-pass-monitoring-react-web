@@ -3,9 +3,8 @@ import apiService from "./axios";
 
 export default {
   getAppointments: () => apiService.get(`/medical-reservation`),
-  createReservation: (payload) =>
-    apiService.post(`/medical-reservation/create`, payload),
+  createReservation: (payload) => apiService.post(`/medical-reservation/create`, payload),
   viewSchedule: (id) => apiService.post(`/lsi/view/${id}`),
-  getUserSchedules: () =>
-    apiService.post(`medical-reservation/view/user-sched`),
+  getUserSchedules: () =>apiService.post(`medical-reservation/view/user-sched`),
+  setToVerified: (id) =>apiService.post(`medical-reservation/verify/${id}`),
 };

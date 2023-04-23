@@ -34,7 +34,7 @@ import { setAppointment } from "../../store/medicalAppointmentSlice";
 
 // ----------------------------------------------------------------------
 
-export default function MedicalAppointments() {
+export default function TravelPassAppointments() {
   const { getAppointments, setToVerified } = medicalReservationApi;
   const queryClient = useQueryClient();
   const dispatch = useDispatch();

@@ -28,14 +28,16 @@ import DialogModal from "../../components/DialogModal";
 
 // api
 import medicalReservationApi from "../../services/medicalReservationApi";
+import medicalStatusApi from "../../services/medicalStatusApi";
 
 // redux
 import { setAppointment } from "../../store/medicalAppointmentSlice";
 
 // ----------------------------------------------------------------------
 
-export default function MedicalAppointments() {
+export default function MedicalApplications() {
   const { getAppointments, setToVerified } = medicalReservationApi;
+  const { getVerified, getMedicalApplications } = medicalStatusApi;
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -68,21 +70,19 @@ export default function MedicalAppointments() {
   };
 
   const {
-    data: appointmentsData,
-    status: appointmentsStatus,
+    data: medicalData,
+    status: medicalStatus,
     isFetching: scheduleIsFetching,
-  } = useQuery(["get-all-appointments"], () => getAppointments(), {
+  } = useQuery(["get-all-medical-applications"], () => getMedicalApplications(), {
     retry: 3, // Will retry failed requests 10 times before displaying an error
   });
 
   useEffect(() => {
-    if (appointmentsStatus === "success") {
+    if (medicalStatus === "success") {
       setAppointmentList(
-        appointmentsData.data.map((data) => ({
+        medicalData.data.map((data) => ({
           id: data.id,
-          scheduleDate: data.schedule.schedule_date,
-          scheduleTime: getTime(data.schedule.schedule_time),
-          referenceCode: data.reference_code,
+          referenceCode: data.status === "1" ? data.reference_code : "N/A",
           fullName: `${
             data.user.first_name.charAt(0).toUpperCase() +
             data.user.first_name.slice(1)
@@ -95,36 +95,23 @@ export default function MedicalAppointments() {
           }`,
           status: (
             <Chip
-              label={
-                data.status.toString() === "1"
-                  ? "Active"
-                  : data.status.toString() === "2"
-                  ? "Verified"
-                  : "Expired"
-              }
-              color={
-                data.status.toString() === "1"
-                  ? "success"
-                  : data.status.toString() === "2"
-                  ? "info"
-                  : "error"
-              }
+              label={data.status.toString() === "1" ? "Approved" : "Declined"}
+              color={data.status.toString() === "1" ? "success" : "error"}
             />
           ),
+          comment: data.comment,
           action: (
             <>
               <Tooltip title="View Profile">
                 <IconButton
                   onClick={() => {
-                    dispatch(setAppointment(data));
                     setUserHandler(data);
                   }}
-                  // disabled={data.status !== "2"}
                 >
                   <Iconify icon="ic:baseline-remove-red-eye" />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Set to Appointed">
+              {/* <Tooltip title="Set to Appointed">
                 <IconButton
                   onClick={() => {
                     dispatch(setAppointment(data));
@@ -134,20 +121,16 @@ export default function MedicalAppointments() {
                 >
                   <Iconify icon="ic:twotone-file-open" />
                 </IconButton>
-              </Tooltip>
+              </Tooltip> */}
             </>
           ),
         }))
       );
     }
-  }, [appointmentsStatus, appointmentsData]);
+  }, [medicalStatus, medicalData]);
 
   const setUserHandler = async (data) => {
-    if(data.status !== "2") {
-      navigate(`/medical-appointments/user/view-only/${data.user.id}`);
-      return;
-    }
-    navigate(`/medical-appointments/user/view-update/${data.user.id}`);
+    navigate(`/medical-applications/user/view/${data.user.id}`);
   };
 
   const { mutate: setAppointed, isLoading: verificationIsLoading } =
@@ -166,20 +149,15 @@ export default function MedicalAppointments() {
     <Page title="User">
       <Container maxWidth="xl">
         <AppTable
-          tableTitle={"Medical Appointments"}
-          buttonTitle={"New Schedule"}
+          tableTitle={"Medical Applications"}
+          // buttonTitle={"New Application"}
+          // buttonFunction={() => navigate("/medical-applications/create")}
           hasButton={false}
-          buttonFunction={() => navigate("/schedules/create")}
           TABLE_HEAD={[
-            { id: "scheduleDate", label: "Schedule Date", align: "center" },
-            {
-              id: "scheduleTime",
-              label: "Schedule Time",
-              align: "center",
-            },
-            { id: "referenceCode", label: "Reference Code", align: "center" },
             { id: "fullName", label: "Full Name", align: "center" },
+            { id: "referenceCode", label: "Reference Code", align: "center" },
             { id: "status", label: "Status", align: "center" },
+            { id: "comment", label: "Comment", align: "center" },
             { id: "action", label: "Action", align: "center" },
           ]}
           TABLE_DATA={appointmentList}

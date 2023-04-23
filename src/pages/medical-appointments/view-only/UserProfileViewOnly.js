@@ -24,21 +24,21 @@ import {
 import dayjs from "dayjs";
 import { LoadingButton } from "@mui/lab";
 // components
-import Page from "../../components/Page";
-import Iconify from "../../components/Iconify";
+import Page from "../../../components/Page";
+import Iconify from "../../../components/Iconify";
 import {
   FormProvider,
   RHFTextField,
   RHFDropDown,
   RHFDatePicker,
-} from "../../components/hook-form";
+} from "../../../components/hook-form";
 import UserAddress from "./UserAddress";
 
 // api
-import userApi from "../../services/userApi";
+import userApi from "../../../services/userApi";
 
 // schema
-import { UpdateUserSchema } from "../../yup-schema/updateUserSchema";
+import { UpdateUserSchema } from "../../../yup-schema/updateUserSchema";
 
 // ----------------------------------------------------------------------
 
@@ -77,7 +77,7 @@ const positionData = [
   { value: "admin", label: "Admin" },
 ];
 
-export default function UserProfile() {
+export default function UserProfileViewOnly() {
   const queryClient = useQueryClient();
   const user = useParams();
   const navigate = useNavigate();
@@ -322,14 +322,6 @@ export default function UserProfile() {
                     </>
                   </Stack>
                 </FormProvider>
-
-                {/* <Typography
-              variant="body2"
-              align="center"
-              sx={{ color: "text.secondary", mt: 3, alignSelf: "flex-start" }}
-            >
-              Traffic Violation Record @ 2023
-            </Typography> */}
               </>
             )}
           </ContentStyle>

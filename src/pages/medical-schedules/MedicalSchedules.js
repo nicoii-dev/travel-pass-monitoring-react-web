@@ -160,6 +160,7 @@ export default function MedicalSchedules() {
               tableTitle={"Medical Schedules"}
               buttonTitle={"New Schedule"}
               buttonFunction={() => navigate("/schedules/create")}
+              hasButton={false}
               TABLE_HEAD={[
                 {
                   id: "scheduleTime",

@@ -77,6 +77,7 @@ export default function Schedules() {
       setScheduleList(
         scheduleData.data.map((data) => ({
           id: data.id,
+          scheduleType: data.schedule_type.toUpperCase(),
           scheduleDate: data.schedule_date,
           scheduleTime: getTime(data.schedule_time),
           maxLsi: data.max_lsi,
@@ -132,6 +133,7 @@ export default function Schedules() {
           buttonTitle={"New Schedule"}
           buttonFunction={() => navigate("/schedules/create")}
           TABLE_HEAD={[
+            { id: "scheduleType", label: "Schedule Type", align: "center" },
             { id: "scheduleDate", label: "Schedule Date", align: "center" },
             { id: "scheduleTime", label: "Schedule Time", align: "center" },
             { id: "maxLsi", label: "Max LSI", align: "center" },

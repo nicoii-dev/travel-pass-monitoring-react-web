@@ -1,6 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
+import medicalAppointmentSlice from "./medicalAppointmentSlice";
+
 const store = configureStore({
-  reducer: {},
+  reducer: {
+    userAppointment: medicalAppointmentSlice
+  },
 });
 
 export default store;

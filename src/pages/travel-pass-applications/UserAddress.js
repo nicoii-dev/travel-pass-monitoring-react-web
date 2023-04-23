@@ -7,8 +7,8 @@ import {
   barangays,
 } from "select-philippines-address";
 import { Stack } from "@mui/material";
-import AddressDropDown from "../../components/hook-form/AddressDropDown";
-import { RHFTextField } from "../../components/hook-form";
+import AddressDropDown from "../../../components/hook-form/AddressDropDown";
+import { RHFTextField } from "../../../components/hook-form";
 import _ from "lodash";
 
 // ----------------------------------------------------------------------

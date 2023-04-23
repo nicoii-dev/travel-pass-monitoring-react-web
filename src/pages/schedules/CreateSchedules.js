@@ -64,13 +64,21 @@ const timeData = [
   { value: "4", label: "3PM to 5PM" },
 ];
 
+const scheduleType = [
+  { value: "travelpass", label: "Travel Pass" },
+  { value: "medical", label: "Medical Appointment" },
+];
+
 export default function CreateSchedule() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { createSchedules } = schedulesApi;
 
+  const minDate = new Date(new Date().getTime() + 86400000);
+  
   const defaultValues = {
-    scheduleDate: new Date(),
+    scheduleType: 'medical',
+    scheduleDate: dayjs(minDate),
     scheduleTime: "1",
     maxLsi: 1,
   };
@@ -102,8 +110,8 @@ export default function CreateSchedule() {
   );
 
   const onSubmit = async (data) => {
-    console.log(data)
     const payload = {
+      schedule_type: data.scheduleType,
       schedule_date: moment(data.scheduleDate).format('YYYY-MM-DD'),
       schedule_time: data.scheduleTime,
       max_lsi: data.maxLsi,
@@ -133,13 +141,22 @@ export default function CreateSchedule() {
             </div>
             <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
               <Stack spacing={3}>
+              <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                  <RHFDropDown
+                    name="scheduleType"
+                    label="Schedule Type"
+                    dropDownData={scheduleType}             
+                  />
+                </Stack>
+
                 <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                   <RHFDatePicker
                     name="scheduleDate"
                     label="Schedule Date"
                     type="date"
                     sx={{ width: "100%" }}
-                    disablePast                  
+                    disablePast
+                    minDate={dayjs(minDate)}                  
                   />
                 </Stack>
 

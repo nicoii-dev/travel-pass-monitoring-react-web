@@ -22,6 +22,16 @@ const AdminNav = [
     icon: getIcon('material-symbols:medical-information-outline'),
   },
   {
+    title: 'Medical Applications',
+    path: '/medical-applications',
+    icon: getIcon('material-symbols:medical-information-outline'),
+  },
+  {
+    title: 'Travel Pass Appointments',
+    path: '/travel-pass-appointments',
+    icon: getIcon('heroicons:ticket'),
+  },
+  {
     title: 'Travel Pass Applications',
     path: '/travel-pass-applications',
     icon: getIcon('heroicons:ticket'),
