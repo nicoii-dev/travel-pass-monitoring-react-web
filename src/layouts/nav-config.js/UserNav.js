@@ -14,12 +14,17 @@ const UserNav = [
   {
     title: 'Medical Schedules',
     path: '/medical-schedules',
-    icon: getIcon('mdi:account-warning'),
+    icon: getIcon('carbon:reminder-medical'),
   },
   {
-    title: 'Travel Pass',
-    path: '/travel-pass',
-    icon: getIcon('healthicons:community-meeting'),
+    title: 'Travel Pass Schedules',
+    path: '/travel-pass-schedules',
+    icon: getIcon('streamline:travel-airport-departure-time-travel-plane-trip-airplane-time-off-adventure-timer-take-clock'),
+  },
+  {
+    title: 'My Profile',
+    path: '/profile',
+    icon: getIcon('carbon:user-profile-alt'),
   },
 ];
 

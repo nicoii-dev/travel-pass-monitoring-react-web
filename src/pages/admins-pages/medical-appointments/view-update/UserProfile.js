@@ -22,22 +22,22 @@ import {
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 // components
-import Page from "../../../components/Page";
-import Iconify from "../../../components/Iconify";
+import Page from "../../../../components/Page";
+import Iconify from "../../../../components/Iconify";
 import {
   FormProvider,
   RHFTextField,
   RHFDropDown,
   RHFDatePicker,
-} from "../../../components/hook-form";
+} from "../../../../components/hook-form";
 import UserAddress from "./UserAddress";
-import DialogModal from "../../../components/DialogModal";
+import DialogModal from "../../../../components/DialogModal";
 
 // api
-import userApi from "../../../services/userApi";
-import medicalStatusApi from "../../../services/medicalStatusApi";
+import userApi from "../../../../services/userApi";
+import medicalStatusApi from "../../../../services/medicalStatusApi";
 // schema
-import { UpdateUserSchema } from "../../../yup-schema/updateUserSchema";
+import { UpdateUserSchema } from "../../../../yup-schema/updateUserSchema";
 
 // ----------------------------------------------------------------------
 

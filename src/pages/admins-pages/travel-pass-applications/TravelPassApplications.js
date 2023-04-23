@@ -20,18 +20,18 @@ import {
 import { LoadingButton } from "@mui/lab";
 
 // components
-import Page from "../../components/Page";
-import Iconify from "../../components/Iconify";
-import AppTable from "../../components/table/AppTable";
-import Calendar from "../../components/Calendar";
-import DialogModal from "../../components/DialogModal";
+import Page from "../../../components/Page";
+import Iconify from "../../../components/Iconify";
+import AppTable from "../../../components/table/AppTable";
+import Calendar from "../../../components/Calendar";
+import DialogModal from "../../../components/DialogModal";
 
 // api
-import medicalReservationApi from "../../services/medicalReservationApi";
-import medicalStatusApi from "../../services/medicalStatusApi";
+import medicalReservationApi from "../../../services/medicalReservationApi";
+import medicalStatusApi from "../../../services/medicalStatusApi";
 
 // redux
-import { setAppointment } from "../../store/medicalAppointmentSlice";
+import { setAppointment } from "../../../store/medicalAppointmentSlice";
 
 // ----------------------------------------------------------------------
 

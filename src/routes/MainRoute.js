@@ -5,7 +5,7 @@ import { getLocalStorageItem } from "../utils/getLocalStorage";
 import { USER } from "../utils/constants/user";
 
 // pages
-import HomePage from "../pages/home";
+import HomePage from "../pages/users-pages/home";
 import EmailVerification from "../pages/EmailVerification";
 import Signin from "../pages/auth/signin/Signin";
 import Signup from "../pages/auth/signup/Signup";
@@ -13,23 +13,24 @@ import Page404 from "../pages/Page404";
 import ForgotPassword from "../pages/auth/forgot-password/ForgotPassword";
 import EmailVerify from "../pages/EmailVerify";
 import ResetPassword from "../pages/auth/reset-password/ResetPassword";
-import User from "../pages/users/User";
-import CreateUser from "../pages/users/create/CreateUser";
-import ViewUser from "../pages/users/view/ViewUser";
+import User from "../pages/admins-pages/users/User";
+import CreateUser from "../pages/admins-pages/users/create/CreateUser"
+import ViewUser from "../pages/admins-pages/users/view/ViewUser";
 
-import Schedules from "../pages/schedules/Schedules";
-import CreateSchedule from "../pages/schedules/CreateSchedules";
-import ViewSchedule from "../pages/schedules/ViewSchedules";
-import Lsi from "../pages/lsi/LSI";
-import ViewLsi from "../pages/lsi/viewLsi";
+import Schedules from "../pages/admins-pages/schedules/Schedules";
+import CreateSchedule from "../pages/admins-pages/schedules/CreateSchedules";
+import ViewSchedule from "../pages/admins-pages/schedules/ViewSchedules";
+import Lsi from "../pages/admins-pages/lsi/LSI";
+import ViewLsi from "../pages/admins-pages/lsi/viewLsi";
 import MedicalSchedules from "../pages/users-pages/medical-schedules/MedicalSchedules";
-import MedicalAppointments from "../pages/medical-appointments/MedicalAppointments";
-import MedicalApplications from "../pages/medical-applications/MedicalAppilcations";
-import UserProfile from "../pages/medical-appointments/view-update/UserProfile";
-import MedicalUserProfile from "../pages/medical-applications/view/UserProfile";
-import UserProfileViewOnly from "../pages/medical-appointments/view-only/UserProfileViewOnly";
-import TravelPassAppointments from "../pages/travel-pass-appointments/TravelPassAppointments";
-import TravelPassApplications from "../pages/travel-pass-applications/TravelPassApplications";
+import MedicalAppointments from "../pages/admins-pages/medical-appointments/MedicalAppointments";
+import MedicalApplications from "../pages/admins-pages/medical-applications/MedicalAppilcations";
+import UserProfile from "../pages/admins-pages/medical-appointments/view-update/UserProfile";
+import MedicalUserProfile from "../pages/admins-pages/medical-applications/view/UserProfile";
+import UserProfileViewOnly from "../pages/admins-pages/medical-appointments/view-only/UserProfileViewOnly";
+import TravelPassAppointments from "../pages/admins-pages/travel-pass-appointments/TravelPassAppointments";
+import TravelPassApplications from "../pages/admins-pages/travel-pass-applications/TravelPassApplications";
+import TravelPassSchedules from "../pages/users-pages/travel-pass-schedules/MedicalSchedules";
 
 const MainRoute = () => {
   const location = useLocation();
@@ -127,7 +128,7 @@ const MainRoute = () => {
             <Route path="home" element={<HomePage />} />
             <Route path="profile" element={<User />} />
             <Route path="medical-schedules" element={<MedicalSchedules />} />
-            <Route path="travel-pass" element={<User />} />
+            <Route path="travel-pass-schedules" element={<TravelPassSchedules />} />
             <Route path="404" element={<Page404 />} />
             <Route
               path="*"

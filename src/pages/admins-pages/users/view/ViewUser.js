@@ -24,21 +24,21 @@ import {
 import dayjs from "dayjs";
 import { LoadingButton } from "@mui/lab";
 // components
-import Page from "../../../components/Page";
-import Iconify from "../../../components/Iconify";
+import Page from "../../../../components/Page";
+import Iconify from "../../../../components/Iconify";
 import {
   FormProvider,
   RHFTextField,
   RHFDropDown,
   RHFDatePicker,
-} from "../../../components/hook-form";
+} from "../../../../components/hook-form";
 import ViewCurrentAddress from "./ViewCurrentAddress";
 
 // api
-import userApi from "../../../services/userApi";
+import userApi from "../../../../services/userApi";
 
 // schema
-import { UpdateUserSchema } from "../../../yup-schema/updateUserSchema";
+import { UpdateUserSchema } from "../../../../yup-schema/updateUserSchema";
 
 // ----------------------------------------------------------------------
 

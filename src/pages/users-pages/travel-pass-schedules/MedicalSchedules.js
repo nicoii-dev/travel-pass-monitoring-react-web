@@ -27,7 +27,7 @@ import medicalReservationApi from "../../../services/medicalReservationApi";
 
 // ----------------------------------------------------------------------
 
-export default function MedicalSchedules() {
+export default function TravelPassSchedules() {
   const { getSchedulesByDate } = schedulesApi;
   const {createReservation, getUserSchedules} = medicalReservationApi
   const navigate = useNavigate();
@@ -95,7 +95,6 @@ export default function MedicalSchedules() {
     onSuccess: (result) => {
       toast.success(result?.data?.message);
       GetSchedule({"schedule_date": date})
-      queryClient.invalidateQueries(["get-all-user-schedules"]);
     },
     onError: (error) => {
       console.log(error)

@@ -17,12 +17,12 @@ import {
 } from "@mui/material";
 
 // components
-import Page from "../../components/Page";
-import Iconify from "../../components/Iconify";
-import AppTable from "../../components/table/AppTable";
+import Page from "../../../components/Page";
+import Iconify from "../../../components/Iconify";
+import AppTable from "../../../components/table/AppTable";
 
 // api
-import lsiApi from "../../services/lsiApi";
+import lsiApi from "../../../services/lsiApi";
 
 // ----------------------------------------------------------------------
 

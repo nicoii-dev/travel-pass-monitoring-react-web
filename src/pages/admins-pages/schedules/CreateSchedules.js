@@ -21,20 +21,20 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 // components
-import Page from "../../components/Page";
-import Iconify from "../../components/Iconify";
+import Page from "../../../components/Page";
+import Iconify from "../../../components/Iconify";
 import {
   FormProvider,
   RHFTextField,
   RHFDropDown,
   RHFDatePicker,
-} from "../../components/hook-form";
+} from "../../../components/hook-form";
 
 // api
-import schedulesApi from "../../services/schedulesApi";
+import schedulesApi from "../../../services/schedulesApi";
 
 // schema
-import { ScheduleSchema } from "../../yup-schema/createScheduleSchema";
+import { ScheduleSchema } from "../../../yup-schema/createScheduleSchema";
 // ----------------------------------------------------------------------
 
 const RootStyle = styled("div")(({ theme }) => ({
