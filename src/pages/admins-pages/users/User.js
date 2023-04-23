@@ -9,12 +9,12 @@ import { toast } from 'react-toastify';
 import { Container, Chip, Tooltip, IconButton, Stack, Button, Typography } from '@mui/material';
 
 // components
-import Page from '../../components/Page';
-import Iconify from '../../components/Iconify';
-import AppTable from '../../components/table/AppTable';
+import Page from '../../../components/Page';
+import Iconify from '../../../components/Iconify';
+import AppTable from '../../../components/table/AppTable';
 
 // api
-import userApi from '../../services/userApi';
+import userApi from '../../../services/userApi';
 
 // ----------------------------------------------------------------------
 

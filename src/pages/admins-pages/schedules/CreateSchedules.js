@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
+import React, { useState } from "react";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "react-query";
 import { toast } from "react-toastify";
 import moment from "moment";
@@ -65,19 +65,20 @@ const timeData = [
 ];
 
 const scheduleType = [
-  { value: "travelpass", label: "Travel Pass" },
   { value: "medical", label: "Medical Appointment" },
+  { value: "travelpass", label: "Travel Pass" },
 ];
 
-export default function ViewSchedule() {
+export default function CreateSchedule() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const schedule = useParams();
-  const { viewSchedule, updateSchedule } = schedulesApi;
+  const { createSchedules } = schedulesApi;
+
   const minDate = new Date(new Date().getTime() + 86400000);
 
   const defaultValues = {
-    scheduleDate: new Date(),
+    scheduleType: 'medical',
+    scheduleDate: dayjs(minDate),
     scheduleTime: "1",
     maxLsi: 1,
   };
@@ -91,37 +92,13 @@ export default function ViewSchedule() {
     handleSubmit,
     formState: { isSubmitting },
     setValue,
-    reset,
   } = methods;
 
-  const { mutate: View, isLoading: viewIsLoading } = useMutation(
-    () => viewSchedule(schedule.id),
+  const { mutate: Create, isLoading: isCreateLoading } = useMutation(
+    (payload) => createSchedules(payload),
     {
       onSuccess: (data) => {
-        const { schedule_date, schedule_time, max_lsi } = data?.data;
-
-        reset({
-          scheduleDate: moment(schedule_date).format("MM-DD-YYYY"),
-          scheduleTime: schedule_time,
-          maxLsi: max_lsi,
-        });
-      },
-      onError: (data) => {
-        console.log(data);
-        toast.error(data.response.data.message);
-      },
-    }
-  );
-
-  useEffect(() => {
-    View();
-  }, [View, schedule]);
-
-  const { mutate: Update, isLoading: isCreateLoading } = useMutation(
-    (payload) => updateSchedule(schedule.id, payload),
-    {
-      onSuccess: (data) => {
-        queryClient.invalidateQueries(["get-all-schedules"]);
+        queryClient.invalidateQueries(["get-all-users"]);
         toast.success("Created successfully");
         navigate(-1);
       },
@@ -135,11 +112,11 @@ export default function ViewSchedule() {
   const onSubmit = async (data) => {
     const payload = {
       schedule_type: data.scheduleType,
-      schedule_date: moment(data.scheduleDate).format("YYYY-MM-DD"),
+      schedule_date: moment(data.scheduleDate).format('YYYY-MM-DD'),
       schedule_time: data.scheduleTime,
       max_lsi: data.maxLsi,
     };
-    await Update(payload);
+    await Create(payload);
   };
 
   return (
@@ -159,26 +136,27 @@ export default function ViewSchedule() {
                 gutterBottom
                 sx={{ mb: 2, alignSelf: "flex-end" }}
               >
-                Viewing Schedule
+                Creating Schedule
               </Typography>
             </div>
             <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
               <Stack spacing={3}>
-                <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                  <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                    <RHFDropDown
-                      name="scheduleType"
-                      label="Schedule Type"
-                      dropDownData={scheduleType}
-                    />
-                  </Stack>
+              <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                  <RHFDropDown
+                    name="scheduleType"
+                    label="Schedule Type"
+                    dropDownData={scheduleType}             
+                  />
+                </Stack>
 
+                <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                   <RHFDatePicker
                     name="scheduleDate"
                     label="Schedule Date"
                     type="date"
                     sx={{ width: "100%" }}
-                    minDate={dayjs(minDate)}
+                    disablePast
+                    minDate={dayjs(minDate)}                  
                   />
                 </Stack>
 
@@ -201,7 +179,7 @@ export default function ViewSchedule() {
                       loading={isCreateLoading}
                       type="submit"
                     >
-                      Update
+                      Create
                     </LoadingButton>
                   </Box>
                 </Stack>

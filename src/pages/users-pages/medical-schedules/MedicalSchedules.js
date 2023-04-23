@@ -16,14 +16,14 @@ import {
 } from "@mui/material";
 
 // components
-import Page from "../../components/Page";
-import Iconify from "../../components/Iconify";
-import AppTable from "../../components/table/AppTable";
-import Calendar from "../../components/Calendar";
+import Page from "../../../components/Page";
+import Iconify from "../../../components/Iconify";
+import AppTable from "../../../components/table/AppTable";
+import Calendar from "../../../components/Calendar";
 
 // api
-import schedulesApi from "../../services/schedulesApi";
-import medicalReservationApi from "../../services/medicalReservationApi";
+import schedulesApi from "../../../services/schedulesApi";
+import medicalReservationApi from "../../../services/medicalReservationApi";
 
 // ----------------------------------------------------------------------
 

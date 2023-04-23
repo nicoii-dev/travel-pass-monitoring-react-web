@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQueryClient } from "react-query";
 import { toast } from "react-toastify";
 import moment from "moment";
@@ -21,20 +21,20 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 // components
-import Page from "../../components/Page";
-import Iconify from "../../components/Iconify";
+import Page from "../../../components/Page";
+import Iconify from "../../../components/Iconify";
 import {
   FormProvider,
   RHFTextField,
   RHFDropDown,
   RHFDatePicker,
-} from "../../components/hook-form";
+} from "../../../components/hook-form";
 
 // api
-import schedulesApi from "../../services/schedulesApi";
+import schedulesApi from "../../../services/schedulesApi";
 
 // schema
-import { ScheduleSchema } from "../../yup-schema/createScheduleSchema";
+import { ScheduleSchema } from "../../../yup-schema/createScheduleSchema";
 // ----------------------------------------------------------------------
 
 const RootStyle = styled("div")(({ theme }) => ({
@@ -65,20 +65,19 @@ const timeData = [
 ];
 
 const scheduleType = [
-  { value: "travelpass", label: "Travel Pass" },
   { value: "medical", label: "Medical Appointment" },
+  { value: "travelpass", label: "Travel Pass" },
 ];
 
-export default function CreateSchedule() {
+export default function ViewSchedule() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { createSchedules } = schedulesApi;
-
+  const schedule = useParams();
+  const { viewSchedule, updateSchedule } = schedulesApi;
   const minDate = new Date(new Date().getTime() + 86400000);
-  
+
   const defaultValues = {
-    scheduleType: 'medical',
-    scheduleDate: dayjs(minDate),
+    scheduleDate: new Date(),
     scheduleTime: "1",
     maxLsi: 1,
   };
@@ -92,13 +91,37 @@ export default function CreateSchedule() {
     handleSubmit,
     formState: { isSubmitting },
     setValue,
+    reset,
   } = methods;
 
-  const { mutate: Create, isLoading: isCreateLoading } = useMutation(
-    (payload) => createSchedules(payload),
+  const { mutate: View, isLoading: viewIsLoading } = useMutation(
+    () => viewSchedule(schedule.id),
     {
       onSuccess: (data) => {
-        queryClient.invalidateQueries(["get-all-users"]);
+        const { schedule_date, schedule_time, max_lsi } = data?.data;
+
+        reset({
+          scheduleDate: moment(schedule_date).format("MM-DD-YYYY"),
+          scheduleTime: schedule_time,
+          maxLsi: max_lsi,
+        });
+      },
+      onError: (data) => {
+        console.log(data);
+        toast.error(data.response.data.message);
+      },
+    }
+  );
+
+  useEffect(() => {
+    View();
+  }, [View, schedule]);
+
+  const { mutate: Update, isLoading: isCreateLoading } = useMutation(
+    (payload) => updateSchedule(schedule.id, payload),
+    {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(["get-all-schedules"]);
         toast.success("Created successfully");
         navigate(-1);
       },
@@ -112,11 +135,11 @@ export default function CreateSchedule() {
   const onSubmit = async (data) => {
     const payload = {
       schedule_type: data.scheduleType,
-      schedule_date: moment(data.scheduleDate).format('YYYY-MM-DD'),
+      schedule_date: moment(data.scheduleDate).format("YYYY-MM-DD"),
       schedule_time: data.scheduleTime,
       max_lsi: data.maxLsi,
     };
-    await Create(payload);
+    await Update(payload);
   };
 
   return (
@@ -136,27 +159,26 @@ export default function CreateSchedule() {
                 gutterBottom
                 sx={{ mb: 2, alignSelf: "flex-end" }}
               >
-                Creating Schedule
+                Viewing Schedule
               </Typography>
             </div>
             <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
               <Stack spacing={3}>
-              <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                  <RHFDropDown
-                    name="scheduleType"
-                    label="Schedule Type"
-                    dropDownData={scheduleType}             
-                  />
-                </Stack>
-
                 <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                  <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                    <RHFDropDown
+                      name="scheduleType"
+                      label="Schedule Type"
+                      dropDownData={scheduleType}
+                    />
+                  </Stack>
+
                   <RHFDatePicker
                     name="scheduleDate"
                     label="Schedule Date"
                     type="date"
                     sx={{ width: "100%" }}
-                    disablePast
-                    minDate={dayjs(minDate)}                  
+                    minDate={dayjs(minDate)}
                   />
                 </Stack>
 
@@ -179,7 +201,7 @@ export default function CreateSchedule() {
                       loading={isCreateLoading}
                       type="submit"
                     >
-                      Create
+                      Update
                     </LoadingButton>
                   </Box>
                 </Stack>

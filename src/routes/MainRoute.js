@@ -22,12 +22,14 @@ import CreateSchedule from "../pages/schedules/CreateSchedules";
 import ViewSchedule from "../pages/schedules/ViewSchedules";
 import Lsi from "../pages/lsi/LSI";
 import ViewLsi from "../pages/lsi/viewLsi";
-import MedicalSchedules from "../pages/medical-schedules/MedicalSchedules";
+import MedicalSchedules from "../pages/users-pages/medical-schedules/MedicalSchedules";
 import MedicalAppointments from "../pages/medical-appointments/MedicalAppointments";
 import MedicalApplications from "../pages/medical-applications/MedicalAppilcations";
 import UserProfile from "../pages/medical-appointments/view-update/UserProfile";
 import MedicalUserProfile from "../pages/medical-applications/view/UserProfile";
 import UserProfileViewOnly from "../pages/medical-appointments/view-only/UserProfileViewOnly";
+import TravelPassAppointments from "../pages/travel-pass-appointments/TravelPassAppointments";
+import TravelPassApplications from "../pages/travel-pass-applications/TravelPassApplications";
 
 const MainRoute = () => {
   const location = useLocation();
@@ -49,8 +51,8 @@ const MainRoute = () => {
             <Route path="medical-applications" element={<MedicalApplications />} />
             <Route path="medical-applications/create" element={<MedicalUserProfile />} />
             <Route path="medical-applications/user/view/:id" element={<MedicalUserProfile />} />
-            <Route path="travel-pass-appointments" element={<User />} />
-            <Route path="travel-pass-applications" element={<User />} />
+            <Route path="travel-pass-appointments" element={<TravelPassAppointments />} />
+            <Route path="travel-pass-applications" element={<TravelPassApplications />} />
             <Route path="schedules" element={<Schedules />} />
             <Route path="schedules/create" element={<CreateSchedule />} />
             <Route path="schedules/view/:id" element={<ViewSchedule />} />
