@@ -29,15 +29,15 @@ import DialogModal from "../../../components/DialogModal";
 // api
 import medicalReservationApi from "../../../services/medicalReservationApi";
 import medicalStatusApi from "../../../services/medicalStatusApi";
+import travelPassApplicationApi from "../../../services/travelPassApplicationApi";
 
-// redux
-import { setAppointment } from "../../../store/medicalAppointmentSlice";
 
 // ----------------------------------------------------------------------
 
 export default function TravelPassApplications() {
   const { getAppointments, setToVerified } = medicalReservationApi;
   const { getVerified, getMedicalApplications } = medicalStatusApi;
+  const { getAllApplications } = travelPassApplicationApi;
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -70,19 +70,18 @@ export default function TravelPassApplications() {
   };
 
   const {
-    data: medicalData,
-    status: medicalStatus,
+    data: travelData,
+    status: travelStatus,
     isFetching: scheduleIsFetching,
-  } = useQuery(["get-all-medical-applications"], () => getMedicalApplications(), {
+  } = useQuery(["get-all-travelpass-applications"], () => getAllApplications(), {
     retry: 3, // Will retry failed requests 10 times before displaying an error
   });
 
   useEffect(() => {
-    if (medicalStatus === "success") {
+    if (travelStatus === "success") {
       setAppointmentList(
-        medicalData.data.map((data) => ({
+        travelData.data.map((data) => ({
           id: data.id,
-          referenceCode: data.status === "1" ? data.reference_code : "N/A",
           fullName: `${
             data.user.first_name.charAt(0).toUpperCase() +
             data.user.first_name.slice(1)
@@ -93,16 +92,18 @@ export default function TravelPassApplications() {
             data.user.last_name.charAt(0).toUpperCase() +
             data.user.last_name.slice(1)
           }`,
+          travelType: data.travel_type.toUpperCase(),
+          dateOfTravel: data.date_of_travel,
           status: (
             <Chip
               label={data.status.toString() === "1" ? "Approved" : "Declined"}
               color={data.status.toString() === "1" ? "success" : "error"}
             />
           ),
-          comment: data.comment,
+          remarks: data.remarks,
           action: (
             <>
-              <Tooltip title="View Profile">
+              <Tooltip title="View Application">
                 <IconButton
                   onClick={() => {
                     setUserHandler(data);
@@ -127,10 +128,10 @@ export default function TravelPassApplications() {
         }))
       );
     }
-  }, [medicalStatus, medicalData]);
+  }, [travelStatus, travelData]);
 
   const setUserHandler = async (data) => {
-    navigate(`/medical-applications/user/view/${data.user.id}`);
+    navigate(`/travel-pass-applications/view/${data.id}`);
   };
 
   const { mutate: setAppointed, isLoading: verificationIsLoading } =
@@ -155,9 +156,10 @@ export default function TravelPassApplications() {
           hasButton={false}
           TABLE_HEAD={[
             { id: "fullName", label: "Full Name", align: "center" },
-            { id: "referenceCode", label: "Reference Code", align: "center" },
+            { id: "travelType", label: "Travel Type", align: "center" },
+            { id: "dateOfTravel", label: "Date of Travel", align: "center" },
             { id: "status", label: "Status", align: "center" },
-            { id: "comment", label: "Comment", align: "center" },
+            { id: "remarks", label: "Remarks", align: "center" },
             { id: "action", label: "Action", align: "center" },
           ]}
           TABLE_DATA={appointmentList}

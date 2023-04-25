@@ -7,13 +7,13 @@ import {
   barangays,
 } from "select-philippines-address";
 import { Stack } from "@mui/material";
-import AddressDropDown from "../../../components/hook-form/AddressDropDown";
-import { RHFTextField } from "../../../components/hook-form";
+import AddressDropDown from "../../../../components/hook-form/AddressDropDown";
+import { RHFTextField } from "../../../../components/hook-form";
 import _ from "lodash";
 
 // ----------------------------------------------------------------------
 
-export default function UserAddress({ setValue, currentAddressData }) {
+export default function PlaceOfDestination({ setValue, destinationAddress }) {
   const [regionData, setRegion] = useState([]);
   const [provinceData, setProvince] = useState([]);
   const [cityData, setCity] = useState([]);
@@ -90,15 +90,24 @@ export default function UserAddress({ setValue, currentAddressData }) {
 
   useEffect(() => {
     region();
-    if(!_.isEmpty(currentAddressData)) {
-      province(currentAddressData.region)
-      setValue("province", currentAddressData.province, { shouldValidate: true, shouldDirty: true })
-      city(currentAddressData.province)
-      setValue("city", currentAddressData.city_municipality, { shouldValidate: true, shouldDirty: true })
-      barangay(currentAddressData.city_municipality)
-      setValue("barangay", currentAddressData.barangay, { shouldValidate: true, shouldDirty: true })
+    if (!_.isEmpty(destinationAddress)) {
+      province(destinationAddress.destination_region);
+      setValue("province", destinationAddress.destination_province, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+      city(destinationAddress.destination_province);
+      setValue("city", destinationAddress.destination_city, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+      barangay(destinationAddress.destination_city);
+      setValue("barangay", destinationAddress.destination_barangay, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
     }
-  }, [currentAddressData]);
+  }, [destinationAddress]);
 
   return (
     <>
@@ -108,14 +117,14 @@ export default function UserAddress({ setValue, currentAddressData }) {
         sx={{ marginTop: 5 }}
       >
         <AddressDropDown
-          name="region"
+          name="destinationRegion"
           label="Region"
           dropDownData={regionData}
           onChangeFunc={province}
           disabled
         />
         <AddressDropDown
-          name="province"
+          name="destinationProvince"
           label="Province"
           dropDownData={provinceData}
           onChangeFunc={city}
@@ -128,14 +137,14 @@ export default function UserAddress({ setValue, currentAddressData }) {
         sx={{ marginTop: 2 }}
       >
         <AddressDropDown
-          name="city"
+          name="destinationCity"
           label="City"
           dropDownData={cityData}
           onChangeFunc={barangay}
           disabled
         />
         <AddressDropDown
-          name="barangay"
+          name="destinationBarangay"
           label="Barangay"
           dropDownData={barangayData}
           onChangeFunc={brgy}
@@ -147,8 +156,8 @@ export default function UserAddress({ setValue, currentAddressData }) {
         spacing={2}
         sx={{ marginTop: 2 }}
       >
-        <RHFTextField name="street" label="Street" disabled/>
-        <RHFTextField name="zipcode" label="Zip Code" disabled/>
+        <RHFTextField name="destinationStreet" label="Street" disabled />
+        <RHFTextField name="destinationZipcode" label="Zip Code" disabled/>
       </Stack>
     </>
   );

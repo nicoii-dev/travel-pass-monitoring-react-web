@@ -27,7 +27,7 @@ import Calendar from "../../../components/Calendar";
 import DialogModal from "../../../components/DialogModal";
 
 // api
-import medicalReservationApi from "../../../services/medicalReservationApi";
+import travelPassReservationApi from "../../../services/travelPassReservationApi";
 
 // redux
 import { setAppointment } from "../../../store/medicalAppointmentSlice";
@@ -35,7 +35,7 @@ import { setAppointment } from "../../../store/medicalAppointmentSlice";
 // ----------------------------------------------------------------------
 
 export default function TravelPassAppointments() {
-  const { getAppointments, setToVerified } = medicalReservationApi;
+  const { getAppointments, setToVerified } = travelPassReservationApi;
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -113,7 +113,7 @@ export default function TravelPassAppointments() {
           ),
           action: (
             <>
-              <Tooltip title="View Profile">
+              <Tooltip title="View Application">
                 <IconButton
                   onClick={() => {
                     dispatch(setAppointment(data));
@@ -143,11 +143,8 @@ export default function TravelPassAppointments() {
   }, [appointmentsStatus, appointmentsData]);
 
   const setUserHandler = async (data) => {
-    if(data.status !== "2") {
-      navigate(`/medical-appointments/user/view-only/${data.user.id}`);
-      return;
-    }
-    navigate(`/medical-appointments/user/view-update/${data.user.id}`);
+    console.log(data)
+    navigate(`/travel-pass-appointments/view/${data.id}`);
   };
 
   const { mutate: setAppointed, isLoading: verificationIsLoading } =
@@ -166,7 +163,7 @@ export default function TravelPassAppointments() {
     <Page title="User">
       <Container maxWidth="xl">
         <AppTable
-          tableTitle={"Medical Appointments"}
+          tableTitle={"Travel Pass Appointments"}
           buttonTitle={"New Schedule"}
           hasButton={false}
           buttonFunction={() => navigate("/schedules/create")}
@@ -194,7 +191,7 @@ export default function TravelPassAppointments() {
         buttons
       >
         <Typography variant="h4" sx={{ mt: 1, textAlign: "center" }}>
-          LSI medical application verified?
+          LSI travel pass application verified?
         </Typography>
         <Stack
           spacing={2}

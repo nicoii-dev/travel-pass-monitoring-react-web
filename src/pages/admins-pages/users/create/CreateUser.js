@@ -74,6 +74,14 @@ const positionData = [
   { value: "admin", label: "Admin" },
 ];
 
+const civilStatusData = [
+  { value: "single", label: "Single" },
+  { value: "married", label: "Married" },
+  { value: "widowed", label: "Widowed" },
+  { value: "divorced", label: "Divorced" },
+  { value: "separated", label: "Separated" },
+];
+
 export default function CreateUser() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -85,6 +93,7 @@ export default function CreateUser() {
     lastName: "cc",
     dob: dayjs(new Date()),
     gender: "male",
+    civilStatus: "single",
     phoneNumber: "09354135541",
     role: "admin",
     status: 1,
@@ -180,6 +189,11 @@ export default function CreateUser() {
                     name="gender"
                     label="Gender"
                     dropDownData={genderData}
+                  />
+                  <RHFDropDown
+                    name="civilStatus"
+                    label="Civil Status"
+                    dropDownData={civilStatusData}
                   />
                   <RHFTextField
                     name="phoneNumber"

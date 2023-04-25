@@ -7,13 +7,12 @@ import {
   barangays,
 } from "select-philippines-address";
 import { Stack } from "@mui/material";
-import AddressDropDown from "../../../../components/hook-form/AddressDropDown";
-import { RHFTextField } from "../../../../components/hook-form";
-import _ from "lodash";
+import AddressDropDown from "../../../components/hook-form/AddressDropDown";
+import { RHFTextField } from "../../../components/hook-form";
 
 // ----------------------------------------------------------------------
 
-export default function UserAddress({ setValue, currentAddressData }) {
+export default function RegisterAddress({ setValue }) {
   const [regionData, setRegion] = useState([]);
   const [provinceData, setProvince] = useState([]);
   const [cityData, setCity] = useState([]);
@@ -55,6 +54,7 @@ export default function UserAddress({ setValue, currentAddressData }) {
           label: data.province_name,
         }))
       );
+      setValue("province", response[0].province_code, { shouldValidate: true, shouldDirty: true });
       setCity([]);
       setBarangay([]);
     });
@@ -69,18 +69,21 @@ export default function UserAddress({ setValue, currentAddressData }) {
           label: data.city_name,
         }))
       );
+      setValue("city", response[0].city_code, { shouldValidate: true, shouldDirty: true });
     });
   };
 
   const barangay = (e) => {
     // setCityAddr(e.target.selectedOptions[0].text);
     barangays(e).then((response) => {
+      console.log(response);
       setBarangay(
         response.map((data) => ({
           value: data.brgy_code,
           label: data.brgy_name,
         }))
       );
+      setValue("barangay", response[0].brgy_code, { shouldValidate: true, shouldDirty: true });
     });
   };
 
@@ -90,16 +93,7 @@ export default function UserAddress({ setValue, currentAddressData }) {
 
   useEffect(() => {
     region();
-    if(!_.isEmpty(currentAddressData)) {
-      province(currentAddressData.region)
-      setValue("province", currentAddressData.province, { shouldValidate: true, shouldDirty: true })
-      city(currentAddressData.province)
-      setValue("city", currentAddressData.city_municipality, { shouldValidate: true, shouldDirty: true })
-      barangay(currentAddressData.city_municipality)
-      setValue("barangay", currentAddressData.barangay, { shouldValidate: true, shouldDirty: true })
-    }
-  }, [currentAddressData]);
-
+  }, []);
   return (
     <>
       <Stack
@@ -112,14 +106,12 @@ export default function UserAddress({ setValue, currentAddressData }) {
           label="Region"
           dropDownData={regionData}
           onChangeFunc={province}
-          disabled
         />
         <AddressDropDown
           name="province"
           label="Province"
           dropDownData={provinceData}
           onChangeFunc={city}
-          disabled
         />
       </Stack>
       <Stack
@@ -132,14 +124,12 @@ export default function UserAddress({ setValue, currentAddressData }) {
           label="City"
           dropDownData={cityData}
           onChangeFunc={barangay}
-          disabled
         />
         <AddressDropDown
           name="barangay"
           label="Barangay"
           dropDownData={barangayData}
           onChangeFunc={brgy}
-          disabled
         />
       </Stack>
       <Stack
@@ -147,8 +137,8 @@ export default function UserAddress({ setValue, currentAddressData }) {
         spacing={2}
         sx={{ marginTop: 2 }}
       >
-        <RHFTextField name="street" label="Street" disabled />
-        <RHFTextField name="zipcode" label="Zip Code" disabled />
+        <RHFTextField name="street" label="Street" />
+        <RHFTextField name="zipcode" label="Zip Code" />
       </Stack>
     </>
   );

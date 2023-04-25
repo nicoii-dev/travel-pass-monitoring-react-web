@@ -36,19 +36,19 @@ import userApi from "../../../services/userApi";
 
 const RootStyle = styled("div")(({ theme }) => ({
   [theme.breakpoints.up("md")]: {
-    display: "flex",
+    display: "grid",
   },
   // backgroundImage: `url(${'assets/background/background2.jpg'})`,
   // backgroundPosition: 'center',
   // // backgroundSize: 'cover',
   backgroundColor: "#FFD700",
-  height: "100vh",
+  height: "100%",
 }));
 
 const ContentStyle = styled("div")(({ theme }) => ({
   margin: "auto",
   minHeight: "60vh",
-  display: "flex",
+  display: "grid",
   flexDirection: "column",
   padding: theme.spacing(2, 0),
 }));

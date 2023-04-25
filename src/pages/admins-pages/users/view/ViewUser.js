@@ -77,6 +77,14 @@ const positionData = [
   { value: "admin", label: "Admin" },
 ];
 
+const civilStatusData = [
+  { value: "single", label: "Single" },
+  { value: "married", label: "Married" },
+  { value: "widowed", label: "Widowed" },
+  { value: "divorced", label: "Divorced" },
+  { value: "separated", label: "Separated" },
+];
+
 export default function ViewUser() {
   const queryClient = useQueryClient();
   const user = useParams();
@@ -91,6 +99,7 @@ export default function ViewUser() {
     lastName: "",
     dob: moment(new Date()).format("MM-DD-YYYY"),
     gender: "",
+    civilStatus: "",
     phoneNumber: "",
     role: "",
     status: "",
@@ -124,6 +133,7 @@ export default function ViewUser() {
           last_name,
           gender,
           dob,
+          civil_status,
           phone_number,
           role,
           status,
@@ -136,6 +146,7 @@ export default function ViewUser() {
           lastName: last_name.charAt(0).toUpperCase() + first_name.slice(1),
           phoneNumber: phone_number,
           gender,
+          civilStatus: civil_status,
           dob,
           role,
           status,
@@ -294,13 +305,18 @@ export default function ViewUser() {
                           name="dob"
                           label="Date of Birth"
                           type="date"
-                          sx={{ width: 500 }}
+                          sx={{ width: 700 }}
                         />
                         <RHFDropDown
                           name="gender"
                           label="Gender"
                           inputType="dropDown"
                           dropDownData={genderData}
+                        />
+                        <RHFDropDown
+                          name="civilStatus"
+                          label="Civil Status"
+                          dropDownData={civilStatusData}
                         />
                         <RHFTextField
                           name="phoneNumber"

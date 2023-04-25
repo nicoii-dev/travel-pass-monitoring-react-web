@@ -13,7 +13,7 @@ import _ from "lodash";
 
 // ----------------------------------------------------------------------
 
-export default function UserAddress({ setValue, currentAddressData }) {
+export default function PlaceOfOrigin({ setValue, originAddress }) {
   const [regionData, setRegion] = useState([]);
   const [provinceData, setProvince] = useState([]);
   const [cityData, setCity] = useState([]);
@@ -90,15 +90,24 @@ export default function UserAddress({ setValue, currentAddressData }) {
 
   useEffect(() => {
     region();
-    if(!_.isEmpty(currentAddressData)) {
-      province(currentAddressData.region)
-      setValue("province", currentAddressData.province, { shouldValidate: true, shouldDirty: true })
-      city(currentAddressData.province)
-      setValue("city", currentAddressData.city_municipality, { shouldValidate: true, shouldDirty: true })
-      barangay(currentAddressData.city_municipality)
-      setValue("barangay", currentAddressData.barangay, { shouldValidate: true, shouldDirty: true })
+    if (!_.isEmpty(originAddress)) {
+      province(originAddress.origin_region);
+      setValue("province", originAddress.origin_province, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+      city(originAddress.origin_province);
+      setValue("city", originAddress.origin_city, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+      barangay(originAddress.origin_city);
+      setValue("barangay", originAddress.origin_barangay, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
     }
-  }, [currentAddressData]);
+  }, [originAddress]);
 
   return (
     <>
@@ -108,14 +117,14 @@ export default function UserAddress({ setValue, currentAddressData }) {
         sx={{ marginTop: 5 }}
       >
         <AddressDropDown
-          name="region"
+          name="originRegion"
           label="Region"
           dropDownData={regionData}
           onChangeFunc={province}
           disabled
         />
         <AddressDropDown
-          name="province"
+          name="originProvince"
           label="Province"
           dropDownData={provinceData}
           onChangeFunc={city}
@@ -128,14 +137,14 @@ export default function UserAddress({ setValue, currentAddressData }) {
         sx={{ marginTop: 2 }}
       >
         <AddressDropDown
-          name="city"
+          name="originCity"
           label="City"
           dropDownData={cityData}
           onChangeFunc={barangay}
           disabled
         />
         <AddressDropDown
-          name="barangay"
+          name="originBarangay"
           label="Barangay"
           dropDownData={barangayData}
           onChangeFunc={brgy}
@@ -147,8 +156,8 @@ export default function UserAddress({ setValue, currentAddressData }) {
         spacing={2}
         sx={{ marginTop: 2 }}
       >
-        <RHFTextField name="street" label="Street" disabled />
-        <RHFTextField name="zipcode" label="Zip Code" disabled />
+        <RHFTextField name="originStreet" label="Street" disabled />
+        <RHFTextField name="originZipcode" label="Zip Code" disabled />
       </Stack>
     </>
   );

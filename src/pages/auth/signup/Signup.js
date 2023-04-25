@@ -18,11 +18,18 @@ import {
   Box,
   Avatar,
 } from "@mui/material";
+import moment from "moment";
 import { LoadingButton } from "@mui/lab";
 import { styled } from "@mui/material";
+import dayjs from "dayjs";
 // components
 import Iconify from "../../../components/Iconify";
-import { FormProvider, RHFTextField } from "../../../components/hook-form";
+import {
+  FormProvider,
+  RHFTextField,
+  RHFDropDown,
+  RHFDatePicker,
+} from "../../../components/hook-form";
 import useResponsive from "../../../hooks/useResponsive";
 import Page from "../../../components/Page";
 
@@ -32,23 +39,15 @@ import { SignupSchema } from "../../../yup-schema/signupSchema";
 // hooks
 import { setLocalStorageItem } from "../../../utils/setLocalStorage";
 import userApi from "../../../services/userApi";
+import RegisterAddress from "./RegisterAddress";
 
 // ----------------------------------------------------------------------
 const RootStyle = styled("div")(({ theme }) => ({
   [theme.breakpoints.up("md")]: {
-    display: "flex",
+    display: "grid",
   },
   backgroundColor: "#FFD700",
-  height: "100vh",
-}));
-
-const SectionStyle = styled(Card)(({ theme }) => ({
-  width: "100%",
-  maxWidth: 464,
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "center",
-  margin: theme.spacing(-10, 0, 2, 2),
+  height: "100%",
 }));
 
 const ContentStyle = styled("div")(({ theme }) => ({
@@ -65,6 +64,14 @@ const genderData = [
   { value: "female", label: "Female" },
 ];
 
+const civilStatusData = [
+  { value: "single", label: "Single" },
+  { value: "married", label: "Married" },
+  { value: "widowed", label: "Widowed" },
+  { value: "divorced", label: "Divorced" },
+  { value: "separated", label: "Separated" },
+];
+
 export default function Signup() {
   const navigate = useNavigate();
   const { register } = userApi;
@@ -72,12 +79,20 @@ export default function Signup() {
   const mdUp = useResponsive("up", "md");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [emailState, setEmail] = useState('');
+  const [emailState, setEmail] = useState("");
 
   const defaultValues = {
     firstName: "",
     middleName: "",
     lastName: "",
+    dob: "",
+    gender: "male",
+    civilStatus: "single",
+    phoneNumber: "",
+    region: 0,
+    province: "",
+    city: "",
+    barangay: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -110,7 +125,17 @@ export default function Signup() {
       first_name: data.firstName,
       middle_name: data.middleName,
       last_name: data.lastName,
-      role: "user",
+      gender: data.gender,
+      civil_status: data.civilStatus,
+      phone_number: data.phoneNumber,
+      dob: moment(data.dob).format("YYYY-MM-DD"),
+      role: "lsi",
+      current_street: data.street,
+      current_barangay: data.barangay,
+      current_city: data.city,
+      current_province: data.province,
+      current_region: data.region,
+      current_zipcode: data.zipcode,
       email: data.email,
       password: data.password,
       password_confirmation: data.confirmPassword,
@@ -131,7 +156,7 @@ export default function Signup() {
       </svg>
       <RootStyle>
         <Container
-          maxWidth="sm"
+          maxWidth="md"
           sx={{
             mt: 5,
             mb: 15,
@@ -161,6 +186,32 @@ export default function Signup() {
                   <RHFTextField name="middleName" label="Middle name" />
                   <RHFTextField name="lastName" label="Last name" />
                 </Stack>
+
+                <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+                  <RHFDropDown
+                    name="gender"
+                    label="Gender"
+                    dropDownData={genderData}
+                  />
+                  <RHFDatePicker
+                    name="dob"
+                    label="Date of Birth"
+                    type="date"
+                    sx={{ width: 700 }}
+                    maxDate={dayjs(new Date())}
+                  />
+                  <RHFDropDown
+                    name="civilStatus"
+                    label="Civil Status"
+                    dropDownData={civilStatusData}
+                  />
+                  <RHFTextField
+                    name="phoneNumber"
+                    label="Phone Number"
+                    type="number"
+                  />
+                </Stack>
+                <RegisterAddress />
                 <RHFTextField name="email" label="Email address" />
                 <RHFTextField
                   name="password"

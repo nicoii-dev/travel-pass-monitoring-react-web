@@ -7,13 +7,13 @@ import {
   barangays,
 } from "select-philippines-address";
 import { Stack } from "@mui/material";
-import AddressDropDown from "../../../../components/hook-form/AddressDropDown";
-import { RHFTextField } from "../../../../components/hook-form";
+import AddressDropDown from "../../../components/hook-form/AddressDropDown";
+import { RHFTextField } from "../../../components/hook-form";
 import _ from "lodash";
 
 // ----------------------------------------------------------------------
 
-export default function UserAddress({ setValue, currentAddressData }) {
+export default function UserAddress({ setValue, currentAddressData, edit }) {
   const [regionData, setRegion] = useState([]);
   const [provinceData, setProvince] = useState([]);
   const [cityData, setCity] = useState([]);
@@ -112,14 +112,14 @@ export default function UserAddress({ setValue, currentAddressData }) {
           label="Region"
           dropDownData={regionData}
           onChangeFunc={province}
-          disabled
+          disabled = {!edit}
         />
         <AddressDropDown
           name="province"
           label="Province"
           dropDownData={provinceData}
           onChangeFunc={city}
-          disabled
+          disabled = {!edit}
         />
       </Stack>
       <Stack
@@ -132,14 +132,14 @@ export default function UserAddress({ setValue, currentAddressData }) {
           label="City"
           dropDownData={cityData}
           onChangeFunc={barangay}
-          disabled
+          disabled = {!edit}
         />
         <AddressDropDown
           name="barangay"
           label="Barangay"
           dropDownData={barangayData}
           onChangeFunc={brgy}
-          disabled
+          disabled = {!edit}
         />
       </Stack>
       <Stack
@@ -147,8 +147,8 @@ export default function UserAddress({ setValue, currentAddressData }) {
         spacing={2}
         sx={{ marginTop: 2 }}
       >
-        <RHFTextField name="street" label="Street" disabled />
-        <RHFTextField name="zipcode" label="Zip Code" disabled />
+        <RHFTextField name="street" label="Street" disabled = {!edit}/>
+        <RHFTextField name="zipcode" label="Zip Code" disabled = {!edit}/>
       </Stack>
     </>
   );

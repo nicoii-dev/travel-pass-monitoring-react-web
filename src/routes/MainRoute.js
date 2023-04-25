@@ -30,7 +30,13 @@ import MedicalUserProfile from "../pages/admins-pages/medical-applications/view/
 import UserProfileViewOnly from "../pages/admins-pages/medical-appointments/view-only/UserProfileViewOnly";
 import TravelPassAppointments from "../pages/admins-pages/travel-pass-appointments/TravelPassAppointments";
 import TravelPassApplications from "../pages/admins-pages/travel-pass-applications/TravelPassApplications";
-import TravelPassSchedules from "../pages/users-pages/travel-pass-schedules/MedicalSchedules";
+import TravelPassSchedules from "../pages/users-pages/travel-pass-schedules/TravelPassSchedules";
+import ProfilePage from "../pages/users-pages/profile/ProfilePage";
+import UserQrDetails from "../pages/admins-pages/scanned-qr/UserQrDetails";
+import LandingPage from "../pages/LandingPage";
+import TravelPassApplicationForm from "../pages/admins-pages/travel-pass-appointments/view-only/ApplicationForm";
+import TravelPassView from "../pages/admins-pages/travel-pass-appointments/view-only/TravelPassView";
+import TravelPassApplicationView from "../pages/admins-pages/travel-pass-applications/view/TravelPassApplicationView";
 
 const MainRoute = () => {
   const location = useLocation();
@@ -53,6 +59,8 @@ const MainRoute = () => {
             <Route path="medical-applications/create" element={<MedicalUserProfile />} />
             <Route path="medical-applications/user/view/:id" element={<MedicalUserProfile />} />
             <Route path="travel-pass-appointments" element={<TravelPassAppointments />} />
+            <Route path="travel-pass-appointments/view/:id" element={<TravelPassView />} />
+            <Route path="travel-pass-applications/view/:id" element={<TravelPassApplicationView />} />
             <Route path="travel-pass-applications" element={<TravelPassApplications />} />
             <Route path="schedules" element={<Schedules />} />
             <Route path="schedules/create" element={<CreateSchedule />} />
@@ -62,6 +70,7 @@ const MainRoute = () => {
             <Route path="user/view/:id" element={<ViewUser />} />
             <Route path="reports" element={<User />} />
             <Route path="404" element={<Page404 />} />
+            <Route path="scanned-qr/:id" element={<UserQrDetails />} />
             <Route
               path="*"
               element={
@@ -126,7 +135,7 @@ const MainRoute = () => {
           <Route path="/" element={<DashboardLayout />}>
             <Route path="/" element={<HomePage />} />
             <Route path="home" element={<HomePage />} />
-            <Route path="profile" element={<User />} />
+            <Route path="profile" element={<ProfilePage />} />
             <Route path="medical-schedules" element={<MedicalSchedules />} />
             <Route path="travel-pass-schedules" element={<TravelPassSchedules />} />
             <Route path="404" element={<Page404 />} />
@@ -145,7 +154,8 @@ const MainRoute = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<Signin />} />
+      <Route path="/" element={<LandingPage />} />
+      <Route path="landing" element={<LandingPage />} />
       <Route path="signin" element={<Signin />} />
       <Route path="signup" element={<Signup />} />
       <Route path="forgot-password" element={<ForgotPassword />} />

@@ -46,11 +46,16 @@ const AdminNav = [
     path: '/user',
     icon: getIcon('eva:people-fill'),
   },
-  {
-    title: 'Reports',
-    path: '/reports',
-    icon: getIcon('iconoir:reports'),
-  },
+  // {
+  //   title: 'QR Details',
+  //   path: '/qr',
+  //   icon: getIcon('eva:people-fill'),
+  // },
+  // {
+  //   title: 'Reports',
+  //   path: '/reports',
+  //   icon: getIcon('iconoir:reports'),
+  // },
 ];
 
 export default AdminNav;

@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "react-query";
+import moment from "moment";
 // @mui
 import { alpha } from "@mui/material/styles";
 import {
@@ -11,20 +12,24 @@ import {
   MenuItem,
   Avatar,
   IconButton,
+  Button,
 } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 // components
 import MenuPopover from "../components/MenuPopover";
 import { getLocalStorageItem } from "../utils/getLocalStorage";
+import DialogModal from "../components/DialogModal";
+import { USER } from "../utils/constants/user";
+import QrCodePage from "../pages/users-pages/profile/QrCode";
 
 // api
 import userApi from "../services/userApi";
-import { USER } from "../utils/constants/user";
 
 // ----------------------------------------------------------------------
 
 const MENU_OPTIONS = [
   {
-    label: "Profile",
+    label: "My QR",
     icon: "eva:person-fill",
     linkTo: "#",
   },
@@ -39,8 +44,12 @@ export default function AccountPopover() {
   const anchorRef = useRef(null);
   const navigate = useNavigate();
   const [open, setOpen] = useState(null);
+  const [openQr, setOpenQr] = useState(false);
+  const [logoutModal, setLogoutModal] = useState(false);
   const queryClient = useQueryClient();
   const { logout } = userApi;
+
+  const [qrDetails, setQrDetails] = useState([]);
 
   const userData = getLocalStorageItem(USER.USER_DATA);
 
@@ -100,10 +109,7 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar
-          src={avatarConfig()}
-          alt="photoURL"
-        />
+        <Avatar src={avatarConfig()} alt="photoURL" />
       </IconButton>
 
       <MenuPopover
@@ -138,31 +144,93 @@ export default function AccountPopover() {
         </Box>
 
         <Divider sx={{ borderStyle: "dashed" }} />
-
-        <Stack sx={{ p: 1 }}>
-          {MENU_OPTIONS.map((option) => (
-            <MenuItem
-              key={option.label}
-              to={option.linkTo}
-              component={RouterLink}
-              onClick={handleClose}
-            >
-              {option.label}
-            </MenuItem>
-          ))}
-        </Stack>
+        {userData.role === "lsi" ? (
+          <Stack sx={{ p: 1 }}>
+            {MENU_OPTIONS.map((option) => (
+              <MenuItem
+                key={option.label}
+                to={option.linkTo}
+                component={RouterLink}
+                onClick={() => {
+                  setOpenQr(true);
+                  handleClose()
+                }}
+              >
+                {option.label}
+              </MenuItem>
+            ))}
+          </Stack>
+        ) : null}
 
         <Divider sx={{ borderStyle: "dashed" }} />
 
         <MenuItem
           onClick={() => {
-            logOut();
+            setOpen(null);
+            setLogoutModal(true);
           }}
           sx={{ m: 1 }}
         >
           Logout
         </MenuItem>
       </MenuPopover>
+
+      <DialogModal
+        open={openQr}
+        handleClose={() => {
+          setOpenQr(false);
+        }}
+        title={`Expiry Date: ${moment(qrDetails?.data?.end_date).format(
+          "MMMM-DD-YYYY"
+        )}`}
+        subtitle={`Start Date: ${moment(qrDetails?.data?.start_date).format(
+          "MMMM-DD-YYYY"
+        )}`}
+        buttons
+      >
+        <QrCodePage qrDetails={qrDetails} setQrDetails={setQrDetails} />
+        <Stack
+          spacing={2}
+          direction="row"
+          sx={{ alignItems: "flex-end", justifyContent: "flex-end", mt: 7 }}
+        >
+          <Button variant="text" onClick={() => setOpenQr(false)}>
+            Close
+          </Button>
+        </Stack>
+      </DialogModal>
+
+      <DialogModal
+        open={logoutModal}
+        handleClose={() => {
+          setLogoutModal(false);
+        }}
+        // title={'Delete User'}
+        // subtitle={'Are you sure you want to delete this user?'}
+        buttons
+      >
+        <Typography variant="h4" sx={{ mt: 1, textAlign: "center" }}>
+          Are you sure you want to logout?
+        </Typography>
+        <Stack
+          spacing={2}
+          direction="row"
+          sx={{ alignItems: "flex-end", justifyContent: "flex-end", mt: 7 }}
+        >
+          <Button variant="text" onClick={() => setLogoutModal(false)}>
+            Cancel
+          </Button>
+
+          <LoadingButton
+            variant="outlined"
+            color="error"
+            onClick={() => logOut()}
+            loading={logOutLoading}
+          >
+            Yes
+          </LoadingButton>
+        </Stack>
+      </DialogModal>
     </>
   );
 }

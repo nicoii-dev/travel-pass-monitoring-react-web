@@ -1,19 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Carousel from "react-material-ui-carousel";
 // @mui
 import { styled } from "@mui/material/styles";
-import { Container, Paper } from "@mui/material";
+import {
+  Container,
+  Paper,
+  Typography,
+  Link,
+  Box,
+  Avatar,
+  Button,
+} from "@mui/material";
+import { isMobile } from "react-device-detect";
 // components
-import Page from "../../../components/Page";
-import Iconify from "../../../components/Iconify";
+import Page from "../components/Page";
+import Iconify from "../components/Iconify";
 // ----------------------------------------------------------------------
 
 const RootStyle = styled("div")(({ theme }) => ({
   [theme.breakpoints.up("md")]: {
     display: "grid",
   },
+  // backgroundImage: `url(${'assets/background/background2.jpg'})`,
+  // backgroundPosition: 'center',
+  // // backgroundSize: 'cover',
   backgroundColor: "#FFD700",
-  height: "60vh",
+  height: "100vh",
 }));
 
 // ----------------------------------------------------------------------
@@ -23,7 +36,9 @@ const image2 = "/assets/landing/image2.jpg";
 const image3 = "/assets/landing/image3.jpg";
 const image4 = "/assets/landing/image4.jpg";
 
-export default function HomePage() {
+export default function LandingPage() {
+  const navigate = useNavigate();
+
   var items = [
     {
       id: "1",
@@ -44,12 +59,42 @@ export default function HomePage() {
   ];
   return (
     <Page title="Landing">
+      <svg
+        width="500"
+        height="80"
+        viewBox="0 0 500 80"
+        preserveAspectRatio="none"
+        style={{ width: "100%", position: "absolute", top: 0, height: 200 }}
+      >
+        <path d="M0,0 L0,40 Q250,80 500,40 L500,0 Z" fill="black" />
+      </svg>
+      <Box
+        sx={{
+          display: isMobile ? "flex" : "inline-flex",
+          justifyContent: "center",
+          top: 10,
+          left: 100,
+          position: "absolute",
+        }}
+      >
+        <Avatar
+          alt="Remy Sharp"
+          src="assets/icons/iligan-icon.jpg"
+          sx={{ width: 100, height: 100 }}
+        />
+      </Box>
+      <Box sx={{ position: "absolute", top: 40, right: 100 }}>
+        <Link href="/signin">
+          <Typography sx={{fontSize: 20, fontFamily: "monospace", color: "#F0ECCF"}}>Get Started</Typography>
+        </Link>
+      </Box>
+
       <RootStyle>
         <Container
           maxWidth="xl"
           sx={{
-            mt: 0,
-            mb: 40,
+            mt: 20,
+            mb: 15,
             padding: 5,
             borderRadius: 2,
             backgroundColor: "white",

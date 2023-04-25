@@ -5,15 +5,10 @@ import { useQuery, useMutation, useQueryClient } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import moment from "moment";
 
 // material
-import {
-  Container,
-  Tooltip,
-  IconButton,
-  Grid,
-  Chip
-} from "@mui/material";
+import { Container, Tooltip, IconButton, Grid, Chip } from "@mui/material";
 
 // components
 import Page from "../../../components/Page";
@@ -28,8 +23,8 @@ import medicalReservationApi from "../../../services/medicalReservationApi";
 // ----------------------------------------------------------------------
 
 export default function MedicalSchedules() {
-  const { getSchedulesByDate } = schedulesApi;
-  const {createReservation, getUserSchedules} = medicalReservationApi
+  const { getMedicalSchedulesByDate } = schedulesApi;
+  const { createReservation, getUserSchedules } = medicalReservationApi;
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
@@ -65,52 +60,55 @@ export default function MedicalSchedules() {
       setUserSchedules(
         userScheduleData.data.map((data) => ({
           id: data.id,
-          scheduleDate: data.schedule.schedule_date,
+          scheduleDate: moment(data.schedule.schedule_date).format(
+            "MMMM-DD-YYYY"
+          ),
           scheduleTime: getTime(data.schedule.schedule_time),
           referenceCode: data.reference_code,
           status: (
             <Chip
-              // onClick={() => {
-              //   setOpen(true);
-              //   setUserId(data.id);
-              //   if (data.status) {
-              //     setUserStatus(true);
-              //   } else {
-              //     setUserStatus(false);
-              //   }
-              //   // if (data.status) deactivateUsers(data.id);
-              //   // if (!data.status) activateUsers(data.id);
-              // }}
-              label={data.status.toString() === '1' ? 'Active' : 'Expired'}
-              color={data.status.toString() === '1' ? 'success' : 'error'}
+              label={
+                data.status.toString() === "1"
+                  ? "Active"
+                  : data.status.toString() === "2"
+                  ? "Verified"
+                  : "Expired"
+              }
+              color={
+                data.status.toString() === "1"
+                  ? "success"
+                  : data.status.toString() === "2"
+                  ? "info"
+                  : "error"
+              }
             />
           ),
         }))
-      )
+      );
     }
-  }, [userScheduleData, userScheduleStatus])
+  }, [userScheduleData, userScheduleStatus]);
 
-  const { mutate: createSched, isLoading: createReservationIsLoading } = useMutation((payload) => createReservation(payload),
-  {
-    onSuccess: (result) => {
-      toast.success(result?.data?.message);
-      GetSchedule({"schedule_date": date})
-      queryClient.invalidateQueries(["get-all-user-schedules"]);
-    },
-    onError: (error) => {
-      console.log(error)
-      toast.error(error.response?.data?.message);
-    },
-  }
-);
+  const { mutate: createSched, isLoading: createReservationIsLoading } =
+    useMutation((payload) => createReservation(payload), {
+      onSuccess: (result) => {
+        queryClient.invalidateQueries(["get-all-user-schedules"]);
+        toast.success(result?.data?.message);
+        GetSchedule({ schedule_date: date });
+      },
+      onError: (error) => {
+        console.log(error);
+        toast.error(error.response?.data?.message);
+      },
+    });
 
   const { mutate: GetSchedule, isLoading: scheduleIsLoading } = useMutation(
-    (payload) => getSchedulesByDate(payload),
+    (payload) => getMedicalSchedulesByDate(payload),
     {
       onSuccess: (result) => {
         setScheduleList(
           result.data.map((data) => ({
             id: data.id,
+            scheduleDate: moment(data.schedule_date).format("MMMM-DD-YYYY"),
             scheduleTime: getTime(data.schedule_time),
             maxLsi: data.max_lsi,
             currentLsi: data.current_lsi,
@@ -121,17 +119,17 @@ export default function MedicalSchedules() {
                   <IconButton
                     onClick={() => {
                       Swal.fire({
-                        title: 'Are you sure you want this schedule?',
-                        icon: 'warning',
+                        title: "Are you sure you want this schedule?",
+                        icon: "warning",
                         showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes'
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes",
                       }).then((result) => {
                         if (result.isConfirmed) {
-                          createSched({schedule_id: data.id.toString()})
+                          createSched({ schedule_id: data.id.toString() });
                         }
-                      })
+                      });
                     }}
                   >
                     <Iconify icon="material-symbols:auto-schedule-outline" />
@@ -164,6 +162,11 @@ export default function MedicalSchedules() {
               hasButton={false}
               TABLE_HEAD={[
                 {
+                  id: "scheduleDate",
+                  label: "Schedule Date",
+                  align: "center",
+                },
+                {
                   id: "scheduleTime",
                   label: "Schedule Time",
                   align: "center",
@@ -189,7 +192,11 @@ export default function MedicalSchedules() {
                   label: "Schedule Time",
                   align: "center",
                 },
-                { id: "referenceCode", label: "Reference Code", align: "center" },
+                {
+                  id: "referenceCode",
+                  label: "Reference Code",
+                  align: "center",
+                },
                 { id: "status", label: "Status", align: "center" },
                 // { id: "action", label: "Action", align: "center" },
               ]}

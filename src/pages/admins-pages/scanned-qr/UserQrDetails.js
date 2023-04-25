@@ -36,6 +36,7 @@ import UserAddress from "./UserAddress";
 
 // api
 import userApi from "../../../services/userApi";
+import travelPassApplicationApi from "../../../services/travelPassApplicationApi";
 
 // schema
 import { UpdateUserSchema } from "../../../yup-schema/updateUserSchema";
@@ -77,13 +78,13 @@ const positionData = [
   { value: "admin", label: "Admin" },
 ];
 
-export default function UserProfileViewOnly() {
+export default function UserQrDetails() {
   const queryClient = useQueryClient();
   const user = useParams();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = React.useState(null);
   const [currentAddressData, setCurrentAddressData] = React.useState([]);
-  const { updateUser, viewUser } = userApi;
+  const { viewQrDetails } = travelPassApplicationApi;
 
   const defaultValues = {
     firstName: "",
@@ -115,9 +116,10 @@ export default function UserProfileViewOnly() {
   } = methods;
 
   const { mutate: View, isLoading: viewIsLoading } = useMutation(
-    (payload) => viewUser(user.id),
+    (payload) => viewQrDetails(user.id),
     {
       onSuccess: (data) => {
+        console.log(data?.data[0]?.user?.current_address);
         const {
           first_name,
           middle_name,
@@ -126,11 +128,13 @@ export default function UserProfileViewOnly() {
           dob,
           phone_number,
           role,
-          status,
           email,
-        } = data?.data;
+        } = data?.data[0]?.user;
 
         reset({
+          startDate: moment(data?.data[0]?.start_date).format("MMMM-DD-YYYY"),
+          expiryDate: moment(data?.data[0]?.end_date).format("MMMM-DD-YYYY"),
+          status: data?.data[0]?.status === "1" ? "ACTIVE" : "EXPIRED",
           firstName: first_name.charAt(0).toUpperCase() + first_name.slice(1),
           middleName: middle_name.charAt(0).toUpperCase() + first_name.slice(1),
           lastName: last_name.charAt(0).toUpperCase() + first_name.slice(1),
@@ -138,16 +142,16 @@ export default function UserProfileViewOnly() {
           gender,
           dob,
           role,
-          status,
+          userStatus: data?.data[0]?.user?.status,
           email,
-          region: data?.data?.current_address?.region,
-          province: data?.data?.current_address?.province,
-          city: data?.data?.current_address?.city_municipality,
-          barangay: data?.data?.current_address?.barangay,
-          street: data?.data?.current_address?.street,
-          zipcode: data?.data?.current_address?.zipcode,
+          region: data?.data[0]?.user?.current_address?.region,
+          province: data?.data[0]?.user?.current_address?.province,
+          city: data?.data[0].user?.current_address?.city_municipality,
+          barangay: data?.data[0]?.user?.current_address?.barangay,
+          street: data?.data[0]?.user?.current_address?.street,
+          zipcode: data?.data[0]?.user?.current_address?.zipcode,
         });
-        setCurrentAddressData(data?.data?.current_address);
+        setCurrentAddressData(data?.data[0]?.user?.current_address);
       },
       onError: (data) => {
         console.log(data);
@@ -160,51 +164,6 @@ export default function UserProfileViewOnly() {
     View();
   }, [View, user]);
 
-  const { mutate: Update, isLoading: updateIsLoading } = useMutation(
-    (payload) => updateUser(user.id, payload),
-    {
-      onSuccess: (data) => {
-        queryClient.invalidateQueries(["get-all-users"]);
-        toast.success("Updated successfully");
-        setIsLoading(false);
-        navigate(-1);
-      },
-      onError: (data) => {
-        console.log(data);
-        toast.error(data.response.data.message);
-        setIsLoading(false);
-      },
-    }
-  );
-
-  const onSubmit = async (data) => {
-    console.log(data);
-    const payload = {
-      first_name: data.firstName,
-      middle_name: data.middleName,
-      last_name: data.lastName,
-      gender: data.gender,
-      phone_number: data.phoneNumber,
-      dob: moment(data.dob).format("YYYY-MM-DD"),
-      role: data.role,
-      status: data.status,
-      email: data.email,
-      current_street: data.street,
-      current_barangay: data.barangay,
-      current_city: data.city,
-      current_province: data.province,
-      current_region: data.region,
-      current_zipcode: data.zipcode,
-      permanent_street: data.street,
-      permanent_barangay: data.barangay,
-      permanent_city: data.city,
-      permanent_province: data.province,
-      permanent_region: data.region,
-      permanent_zipcode: data.zipcode,
-    };
-    await Update(payload);
-  };
-
   return (
     <Page title="View User">
       <RootStyle>
@@ -214,28 +173,7 @@ export default function UserProfileViewOnly() {
               <CircularProgress sx={{ placeSelf: "center" }} />
             ) : (
               <>
-                <div style={{ padding: 5, zIndex: 9999, marginBottom: 20 }}>
-                  <Tooltip title="View">
-                    <IconButton onClick={() => navigate(-1)}>
-                      <Iconify
-                        icon="ion:arrow-back-circle"
-                        sx={{ width: 30, height: 30 }}
-                      />
-                    </IconButton>
-                  </Tooltip>
-                  <Typography
-                    variant="h4"
-                    gutterBottom
-                    sx={{ mb: 2, alignSelf: "flex-end" }}
-                  >
-                    Viewing User Account
-                  </Typography>
-                </div>
-
-                <FormProvider
-                  methods={methods}
-                  onSubmit={handleSubmit(onSubmit)}
-                >
+                <FormProvider methods={methods} onSubmit={() => {}}>
                   <Stack spacing={3}>
                     <>
                       <Stack
@@ -255,19 +193,31 @@ export default function UserProfileViewOnly() {
                             direction={{ xs: "column", sm: "row" }}
                             spacing={2}
                           >
-                            <RHFTextField name="firstName" label="First name" disabled/>
+                            <RHFTextField
+                              name="firstName"
+                              label="First name"
+                              disabled
+                            />
                             <RHFTextField
                               name="middleName"
                               label="Middle name"
                               disabled
                             />
-                            <RHFTextField name="lastName" label="Last name" disabled/>
+                            <RHFTextField
+                              name="lastName"
+                              label="Last name"
+                              disabled
+                            />
                           </Stack>
                           <Stack
                             direction={{ xs: "column", sm: "row" }}
                             spacing={2}
                           >
-                            <RHFTextField name="email" label="Email address" disabled/>
+                            <RHFTextField
+                              name="email"
+                              label="Email address"
+                              disabled
+                            />
                           </Stack>
                           <Stack
                             direction={{ xs: "column", sm: "row" }}
@@ -280,7 +230,7 @@ export default function UserProfileViewOnly() {
                               disabled
                             />
                             <RHFDropDown
-                              name="status"
+                              name="userStatus"
                               label="Status"
                               dropDownData={statusData}
                               disabled
@@ -319,6 +269,22 @@ export default function UserProfileViewOnly() {
                         setValue={setValue}
                         currentAddressData={currentAddressData}
                       />
+                      <Stack
+                        direction={{ xs: "column", sm: "row" }}
+                        spacing={2}
+                      >
+                        <RHFTextField
+                          name="startDate"
+                          label="Start Date"
+                          disabled
+                        />
+                        <RHFTextField
+                          name="expiryDate"
+                          label="Expiry Date"
+                          disabled
+                        />
+                        <RHFTextField name="status" label="Status" disabled />
+                      </Stack>
                     </>
                   </Stack>
                 </FormProvider>
