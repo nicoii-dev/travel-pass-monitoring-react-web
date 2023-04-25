@@ -77,8 +77,10 @@ export default function ApplicationForm({ handleClose, scheduleId }) {
     {
       onSuccess: (data) => {
         queryClient.invalidateQueries(["get-all-users"]);
+        queryClient.invalidateQueries(["get-all-user-travel-schedules"]);
         toast.success("Created successfully");
         setOpenConfirm(false)
+        handleClose()
       },
       onError: (data) => {
         console.log(data);
@@ -120,7 +122,6 @@ export default function ApplicationForm({ handleClose, scheduleId }) {
       handleClose();
     }
   }, [scheduleId]);
-  console.log(scheduleId)
 
   return (
     <>

@@ -1,6 +1,6 @@
 import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { toast } from "react-toastify";
 import moment from "moment/moment";
@@ -40,6 +40,7 @@ import travelPassApplicationApi from "../../../services/travelPassApplicationApi
 
 // schema
 import { UpdateUserSchema } from "../../../yup-schema/updateUserSchema";
+import _ from "lodash";
 
 // ----------------------------------------------------------------------
 
@@ -80,11 +81,12 @@ const positionData = [
 
 export default function UserQrDetails() {
   const queryClient = useQueryClient();
-  const user = useParams();
+  const application = useParams();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = React.useState(null);
   const [currentAddressData, setCurrentAddressData] = React.useState([]);
   const { viewQrDetails } = travelPassApplicationApi;
+  const [qrData, setQrData] = useState([]);
 
   const defaultValues = {
     firstName: "",
@@ -116,17 +118,23 @@ export default function UserQrDetails() {
   } = methods;
 
   const { mutate: View, isLoading: viewIsLoading } = useMutation(
-    () => viewQrDetails(user.id),
+    () => viewQrDetails(application.id),
     {
       onSuccess: (data) => {
-        console.log(data)
+        setQrData(data.data);
         reset({
           startDate: moment(data?.data?.start_date).format("MMMM-DD-YYYY"),
           expiryDate: moment(data?.data?.end_date).format("MMMM-DD-YYYY"),
           status: data?.data?.status === "1" ? "ACTIVE" : "EXPIRED",
-          firstName: data?.data?.user?.first_name?.charAt(0).toUpperCase() + data?.data?.user?.first_name?.slice(1),
-          middleName: data?.data?.user?.middle_name?.charAt(0).toUpperCase() + data?.data?.user?.middle_name?.slice(1),
-          lastName: data?.data?.user?.last_name?.charAt(0).toUpperCase() + data?.data?.user?.last_name?.slice(1),
+          firstName:
+            data?.data?.user?.first_name?.charAt(0).toUpperCase() +
+            data?.data?.user?.first_name?.slice(1),
+          middleName:
+            data?.data?.user?.middle_name?.charAt(0).toUpperCase() +
+            data?.data?.user?.middle_name?.slice(1),
+          lastName:
+            data?.data?.user?.last_name?.charAt(0).toUpperCase() +
+            data?.data?.user?.last_name?.slice(1),
           phoneNumber: data?.data?.user?.phone_number,
           gender: data?.data?.user?.phone_number,
           dob: data?.data?.user?.date_of_birhth,
@@ -151,8 +159,8 @@ export default function UserQrDetails() {
 
   useEffect(() => {
     View();
-  }, [View, user]);
-
+  }, [View, application]);
+  console.log(_.isEmpty(qrData));
   return (
     <Page title="View User">
       <RootStyle>
@@ -162,121 +170,125 @@ export default function UserQrDetails() {
               <CircularProgress sx={{ placeSelf: "center" }} />
             ) : (
               <>
-                <FormProvider methods={methods} onSubmit={() => {}}>
-                  <Stack spacing={3}>
-                    <>
-                      <Stack
-                        direction={{ xs: "column", sm: "row" }}
-                        spacing={2}
-                      >
-                        <img
-                          src="/assets/icons/admin.png"
-                          alt="/assets/icons/admin.png"
-                          loading="lazy"
-                          height={200}
-                          width={200}
-                          style={{ marginLeft: 50, marginRight: 50 }}
-                        />
-                        <Stack spacing={3}>
-                          <Stack
-                            direction={{ xs: "column", sm: "row" }}
-                            spacing={2}
-                          >
-                            <RHFTextField
-                              name="firstName"
-                              label="First name"
-                              disabled
-                            />
-                            <RHFTextField
-                              name="middleName"
-                              label="Middle name"
-                              disabled
-                            />
-                            <RHFTextField
-                              name="lastName"
-                              label="Last name"
-                              disabled
-                            />
-                          </Stack>
-                          <Stack
-                            direction={{ xs: "column", sm: "row" }}
-                            spacing={2}
-                          >
-                            <RHFTextField
-                              name="email"
-                              label="Email address"
-                              disabled
-                            />
-                          </Stack>
-                          <Stack
-                            direction={{ xs: "column", sm: "row" }}
-                            spacing={2}
-                          >
-                            <RHFDropDown
-                              name="role"
-                              label="Role"
-                              dropDownData={positionData}
-                              disabled
-                            />
-                            <RHFDropDown
-                              name="userStatus"
-                              label="Status"
-                              dropDownData={statusData}
-                              disabled
-                            />
+                {_.isEmpty(qrData) ? (
+                  <Typography sx={{alignSelf: 'center', fontSize: 24, fontFamily: "monospace"}}>There is no QR details with this ID</Typography>
+                ) : (
+                  <FormProvider methods={methods} onSubmit={() => {}}>
+                    <Stack spacing={3}>
+                      <>
+                        <Stack
+                          direction={{ xs: "column", sm: "row" }}
+                          spacing={2}
+                        >
+                          <img
+                            src="/assets/icons/admin.png"
+                            alt="/assets/icons/admin.png"
+                            loading="lazy"
+                            height={200}
+                            width={200}
+                            style={{ marginLeft: 50, marginRight: 50 }}
+                          />
+                          <Stack spacing={3}>
+                            <Stack
+                              direction={{ xs: "column", sm: "row" }}
+                              spacing={2}
+                            >
+                              <RHFTextField
+                                name="firstName"
+                                label="First name"
+                                disabled
+                              />
+                              <RHFTextField
+                                name="middleName"
+                                label="Middle name"
+                                disabled
+                              />
+                              <RHFTextField
+                                name="lastName"
+                                label="Last name"
+                                disabled
+                              />
+                            </Stack>
+                            <Stack
+                              direction={{ xs: "column", sm: "row" }}
+                              spacing={2}
+                            >
+                              <RHFTextField
+                                name="email"
+                                label="Email address"
+                                disabled
+                              />
+                            </Stack>
+                            <Stack
+                              direction={{ xs: "column", sm: "row" }}
+                              spacing={2}
+                            >
+                              <RHFDropDown
+                                name="role"
+                                label="Role"
+                                dropDownData={positionData}
+                                disabled
+                              />
+                              <RHFDropDown
+                                name="userStatus"
+                                label="Status"
+                                dropDownData={statusData}
+                                disabled
+                              />
+                            </Stack>
                           </Stack>
                         </Stack>
-                      </Stack>
 
-                      <Stack
-                        direction={{ xs: "column", sm: "row" }}
-                        spacing={2}
-                      >
-                        <RHFDatePicker
-                          name="dob"
-                          label="Date of Birth"
-                          type="date"
-                          sx={{ width: 500 }}
-                          disabled
-                        />
-                        <RHFDropDown
-                          name="gender"
-                          label="Gender"
-                          inputType="dropDown"
-                          dropDownData={genderData}
-                          disabled
-                        />
-                        <RHFTextField
-                          name="phoneNumber"
-                          label="Phone Number"
-                          type="number"
-                          disabled
-                        />
-                      </Stack>
+                        <Stack
+                          direction={{ xs: "column", sm: "row" }}
+                          spacing={2}
+                        >
+                          <RHFDatePicker
+                            name="dob"
+                            label="Date of Birth"
+                            type="date"
+                            sx={{ width: 500 }}
+                            disabled
+                          />
+                          <RHFDropDown
+                            name="gender"
+                            label="Gender"
+                            inputType="dropDown"
+                            dropDownData={genderData}
+                            disabled
+                          />
+                          <RHFTextField
+                            name="phoneNumber"
+                            label="Phone Number"
+                            type="number"
+                            disabled
+                          />
+                        </Stack>
 
-                      <UserAddress
-                        setValue={setValue}
-                        currentAddressData={currentAddressData}
-                      />
-                      <Stack
-                        direction={{ xs: "column", sm: "row" }}
-                        spacing={2}
-                      >
-                        <RHFTextField
-                          name="startDate"
-                          label="Start Date"
-                          disabled
+                        <UserAddress
+                          setValue={setValue}
+                          currentAddressData={currentAddressData}
                         />
-                        <RHFTextField
-                          name="expiryDate"
-                          label="Expiry Date"
-                          disabled
-                        />
-                        <RHFTextField name="status" label="Status" disabled />
-                      </Stack>
-                    </>
-                  </Stack>
-                </FormProvider>
+                        <Stack
+                          direction={{ xs: "column", sm: "row" }}
+                          spacing={2}
+                        >
+                          <RHFTextField
+                            name="startDate"
+                            label="Start Date"
+                            disabled
+                          />
+                          <RHFTextField
+                            name="expiryDate"
+                            label="Expiry Date"
+                            disabled
+                          />
+                          <RHFTextField name="status" label="Status" disabled />
+                        </Stack>
+                      </>
+                    </Stack>
+                  </FormProvider>
+                )}
               </>
             )}
           </ContentStyle>

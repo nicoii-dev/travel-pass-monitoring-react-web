@@ -121,6 +121,7 @@ export default function Lsi() {
           tableTitle={"Locally Stranded Individual"}
           buttonTitle={"New Schedule"}
           buttonFunction={() => navigate("/schedules/create")}
+          hasButton={false}
           TABLE_HEAD={[
             { id: "fullName", label: "Full name", align: 'center' },
             { id: "dob", label: "Date of Birth", align: 'center' },
