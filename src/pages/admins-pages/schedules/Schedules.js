@@ -23,6 +23,8 @@ import AppTable from "../../../components/table/AppTable";
 
 // api
 import schedulesApi from "../../../services/schedulesApi";
+import { getLocalStorageItem } from "../../../utils/getLocalStorage";
+import { USER } from "../../../utils/constants/user";
 
 // ----------------------------------------------------------------------
 
@@ -33,6 +35,7 @@ export default function Schedules() {
   const queryClient = useQueryClient();
   const [scheduleList, setScheduleList] = useState([]);
   const [open, setOpen] = useState(false);
+  const userData = getLocalStorageItem(USER.USER_DATA);
 
   const openDialog = () => {
     setOpen(true);
@@ -49,13 +52,6 @@ export default function Schedules() {
   } = useQuery(["get-all-schedules"], () => getSchedules(), {
     retry: 3, // Will retry failed requests 10 times before displaying an error
   });
-
-  const timeData = [
-    { value: "1", label: "8AM to 10AM" },
-    { value: "2", label: "10AM to 12PM" },
-    { value: "3", label: "1PM to 3PM" },
-    { value: "4", label: "3PM to 5PM" },
-  ];
 
   const getTime = (time) => {
     switch (time) {
@@ -85,11 +81,21 @@ export default function Schedules() {
           action: (
             <>
               <Tooltip title="View">
-                <IconButton onClick={() => {setScheduleHandler(data)}}>
+                <IconButton
+                  onClick={() => {
+                    setScheduleHandler(data);
+                  }}
+                  disabled={
+                    (userData.role.toLowerCase() === "police" &&
+                      data.schedule_type === "medical") ||
+                    (userData.role.toLowerCase() === "medicalstaff" &&
+                      data.schedule_type === "travelpass")
+                  }
+                >
                   <Iconify icon="ic:baseline-remove-red-eye" />
                 </IconButton>
               </Tooltip>
-              <Tooltip
+              {/* <Tooltip
                 title="Delete"
                 onClick={() => {
                   openDialog();
@@ -98,7 +104,7 @@ export default function Schedules() {
                 <IconButton>
                   <Iconify icon="bxs:trash" />
                 </IconButton>
-              </Tooltip>
+              </Tooltip> */}
             </>
           ),
         }))
@@ -107,7 +113,6 @@ export default function Schedules() {
   }, [scheduleStatus, scheduleData]);
 
   const setScheduleHandler = async (data) => {
-    console.log(data)
     navigate(`/schedules/view/${data.id}`);
   };
 

@@ -71,7 +71,7 @@ const statusData = [
 const positionData = [
   { value: "police", label: "Police" },
   { value: "medicalStaff", label: "Medical Staff" },
-  { value: "admin", label: "Admin" },
+  // { value: "admin", label: "Admin" },
 ];
 
 const civilStatusData = [
@@ -135,6 +135,7 @@ export default function CreateUser() {
       middle_name: data.middleName,
       last_name: data.lastName,
       gender: data.gender,
+      civil_status: data.civilStatus,
       phone_number: data.phoneNumber,
       dob: moment(data.dob).format("YYYY-MM-DD"),
       role: data.role,

@@ -112,12 +112,14 @@ export default function ViewCurrentAddress({ setValue, currentAddressData }) {
           label="Region"
           dropDownData={regionData}
           onChangeFunc={province}
+          disabled
         />
         <AddressDropDown
           name="province"
           label="Province"
           dropDownData={provinceData}
           onChangeFunc={city}
+          disabled
         />
       </Stack>
       <Stack
@@ -130,12 +132,14 @@ export default function ViewCurrentAddress({ setValue, currentAddressData }) {
           label="City"
           dropDownData={cityData}
           onChangeFunc={barangay}
+          disabled
         />
         <AddressDropDown
           name="barangay"
           label="Barangay"
           dropDownData={barangayData}
           onChangeFunc={brgy}
+          disabled
         />
       </Stack>
       <Stack
@@ -143,8 +147,8 @@ export default function ViewCurrentAddress({ setValue, currentAddressData }) {
         spacing={2}
         sx={{ marginTop: 2 }}
       >
-        <RHFTextField name="street" label="Street" />
-        <RHFTextField name="zipcode" label="Zip Code" />
+        <RHFTextField name="street" label="Street" disabled/>
+        <RHFTextField name="zipcode" label="Zip Code" disabled/>
       </Stack>
     </>
   );

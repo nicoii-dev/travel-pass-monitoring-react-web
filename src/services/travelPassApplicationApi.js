@@ -7,6 +7,8 @@ export default {
   viewQrDetails: (id) =>apiService.post(`travelpass-applications/view/${id}`),
   getTravelApplications: (payload) =>apiService.post(`travelpass-applications/application`, payload),
   getDetails: (id) =>apiService.post(`travelpass-applications/application/${id}`),
-  updateApplication: (id, payload) =>apiService.post(`travelpass-applications/update/${id}`, payload),
   viewApplication: (id) =>apiService.post(`travelpass-applications/view/${id}`),
+
+  approveApplication: (id, payload) =>apiService.post(`travelpass-applications/approve/${id}`, payload),
+  declineApplication: (id, payload) =>apiService.post(`travelpass-applications/decline/${id}`, payload),
 };

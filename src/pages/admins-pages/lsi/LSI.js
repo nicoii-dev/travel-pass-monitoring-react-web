@@ -55,18 +55,21 @@ export default function Lsi() {
       setLsiList(
         lsiData?.data?.map((data) => ({
           id: data.id,
-          firstName: data.first_name,
-          middleName: data.last_name,
-          lastName: data.last_name,
+          fullName: `${
+            data.first_name.charAt(0).toUpperCase() +
+            data.first_name.slice(1)
+          } ${
+            data.middle_name.charAt(0).toUpperCase() +
+            data.middle_name.slice(1)
+          } ${
+            data.last_name.charAt(0).toUpperCase() +
+            data.last_name.slice(1)
+          }`,
           dob: data.dob,
           gender: data.gender,
           phoneNumber: data.phone_number,
           email: data.email,
-          role: (
-            <span>
-              {data.role.toUpperCase()}
-            </span>
-          ),
+          role: <span>{data.role.toUpperCase()}</span>,
           status: (
             <Chip
               // onClick={() => {
@@ -80,8 +83,8 @@ export default function Lsi() {
               //   // if (data.status) deactivateUsers(data.id);
               //   // if (!data.status) activateUsers(data.id);
               // }}
-              label={data.status.toString() === '1' ? 'Active' : 'Deactived'}
-              color={data.status.toString() === '1' ? 'success' : 'error'}
+              label={data.status.toString() === "1" ? "Active" : "Deactived"}
+              color={data.status.toString() === "1" ? "success" : "error"}
             />
           ),
           action: (
@@ -107,7 +110,7 @@ export default function Lsi() {
   }, [lsiStatus, lsiData]);
 
   const setLsiHandler = async (data) => {
-    console.log(data)
+    console.log(data);
     navigate(`/locally-stranded-individual/view/${data.id}`);
   };
 
@@ -115,20 +118,18 @@ export default function Lsi() {
     <Page title="User">
       <Container maxWidth="xl">
         <AppTable
-          tableTitle={"Schedules Page"}
+          tableTitle={"Locally Stranded Individual"}
           buttonTitle={"New Schedule"}
           buttonFunction={() => navigate("/schedules/create")}
           TABLE_HEAD={[
-            { id: 'firstName', label: 'First name', align: false },
-            { id: 'middleName', label: 'Middle name', align: false },
-            { id: 'lastName', label: 'Last name', align: false },
-            { id: 'dob', label: 'Date of Birth', align: false },
-            // { id: 'gender', label: 'Gender', align: false },
-            { id: 'phoneNumber', label: 'Phone number', align: false },
-            { id: 'email', label: 'Email', align: false },
-            { id: 'role', label: 'Role', align: 'center' },
-            { id: 'status', label: 'Status', align: 'center' },
-            { id: 'action', label: 'Action', align: 'center' },
+            { id: "fullName", label: "Full name", align: 'center' },
+            { id: "dob", label: "Date of Birth", align: 'center' },
+            // { id: 'gender', label: 'Gender', align: 'center' },
+            { id: "phoneNumber", label: "Phone number", align: 'center' },
+            { id: "email", label: "Email", align: 'center' },
+            { id: "role", label: "Role", align: "center" },
+            { id: "status", label: "Status", align: "center" },
+            { id: "action", label: "Action", align: "center" },
           ]}
           TABLE_DATA={lsiList}
         />

@@ -78,7 +78,7 @@ export default function ApplicationForm({ handleClose, scheduleId }) {
       onSuccess: (data) => {
         queryClient.invalidateQueries(["get-all-users"]);
         toast.success("Created successfully");
-        navigate(-1);
+        setOpenConfirm(false)
       },
       onError: (data) => {
         console.log(data);

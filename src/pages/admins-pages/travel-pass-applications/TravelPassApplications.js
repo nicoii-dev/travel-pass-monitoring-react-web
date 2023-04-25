@@ -28,7 +28,7 @@ import DialogModal from "../../../components/DialogModal";
 
 // api
 import medicalReservationApi from "../../../services/medicalReservationApi";
-import medicalStatusApi from "../../../services/medicalStatusApi";
+import medicalApplicationApi from "../../../services/medicalApplicationApi";
 import travelPassApplicationApi from "../../../services/travelPassApplicationApi";
 
 
@@ -36,7 +36,7 @@ import travelPassApplicationApi from "../../../services/travelPassApplicationApi
 
 export default function TravelPassApplications() {
   const { getAppointments, setToVerified } = medicalReservationApi;
-  const { getVerified, getMedicalApplications } = medicalStatusApi;
+  const { getVerified, getMedicalApplications } = medicalApplicationApi;
   const { getAllApplications } = travelPassApplicationApi;
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
@@ -96,8 +96,20 @@ export default function TravelPassApplications() {
           dateOfTravel: data.date_of_travel,
           status: (
             <Chip
-              label={data.status.toString() === "1" ? "Approved" : "Declined"}
-              color={data.status.toString() === "1" ? "success" : "error"}
+              label={
+                data.status.toString() === "1"
+                  ? "Approved"
+                  : data.status.toString() === "2"
+                  ? "Decline"
+                  : "Pending"
+              }
+              color={
+                data.status.toString() === "1"
+                  ? "success"
+                  : data.status.toString() === "2"
+                  ? "error"
+                  : "warning"
+              }
             />
           ),
           remarks: data.remarks,
@@ -108,6 +120,7 @@ export default function TravelPassApplications() {
                   onClick={() => {
                     setUserHandler(data);
                   }}
+                  disabled={data?.reservation?.status !== "2"}
                 >
                   <Iconify icon="ic:baseline-remove-red-eye" />
                 </IconButton>

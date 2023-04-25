@@ -74,7 +74,7 @@ const statusData = [
 const positionData = [
   { value: "police", label: "Police" },
   { value: "medicalStaff", label: "Medical Staff" },
-  { value: "admin", label: "Admin" },
+  // { value: "admin", label: "Admin" },
 ];
 
 const civilStatusData = [
@@ -266,18 +266,19 @@ export default function ViewUser() {
                             direction={{ xs: "column", sm: "row" }}
                             spacing={2}
                           >
-                            <RHFTextField name="firstName" label="First name" />
+                            <RHFTextField name="firstName" label="First name" disabled/>
                             <RHFTextField
                               name="middleName"
                               label="Middle name"
+                              disabled
                             />
-                            <RHFTextField name="lastName" label="Last name" />
+                            <RHFTextField name="lastName" label="Last name" disabled/>
                           </Stack>
                           <Stack
                             direction={{ xs: "column", sm: "row" }}
                             spacing={2}
                           >
-                            <RHFTextField name="email" label="Email address" />
+                            <RHFTextField name="email" label="Email address" disabled/>
                           </Stack>
                           <Stack
                             direction={{ xs: "column", sm: "row" }}
@@ -306,22 +307,26 @@ export default function ViewUser() {
                           label="Date of Birth"
                           type="date"
                           sx={{ width: 700 }}
+                          disabled
                         />
                         <RHFDropDown
                           name="gender"
                           label="Gender"
                           inputType="dropDown"
                           dropDownData={genderData}
+                          disabled
                         />
                         <RHFDropDown
                           name="civilStatus"
                           label="Civil Status"
                           dropDownData={civilStatusData}
+                          disabled
                         />
                         <RHFTextField
                           name="phoneNumber"
                           label="Phone Number"
                           type="number"
+                          disabled
                         />
                       </Stack>
 

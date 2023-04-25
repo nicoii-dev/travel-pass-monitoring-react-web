@@ -2,20 +2,21 @@ import React, {useEffect} from "react";
 import QRCode from "react-qr-code";
 import { useQuery } from "react-query";
 
-// api
-import travelPassApplicationApi from "../../../services/travelPassApplicationApi";
+// components
 import { getLocalStorageItem } from "../../../utils/getLocalStorage";
 import { USER } from "../../../utils/constants/user";
 
+// api
+import qrApi from "../../../services/qrApi";
+
 const QrCodePage = ({qrDetails, setQrDetails}) => {
   const userData = getLocalStorageItem(USER.USER_DATA)
-  const {getUserQr} = travelPassApplicationApi
-
+  const {viewQr} = qrApi;
   const {
     data: qrData,
     status: qrStatus,
     isFetching: userIsFetching,
-  } = useQuery(['get-user-qr'], () => getUserQr({user_id: userData.id.toString()}), {
+  } = useQuery(['get-user-qr'], () => viewQr({user_id: userData.id.toString()}), {
     retry: 3, // Will retry failed requests 10 times before displaying an error
   });
 

@@ -109,7 +109,6 @@ export default function UserPageProfile() {
     (payload) => viewUser(userData.id),
     {
       onSuccess: (data) => {
-        console.log(data);
         const {
           first_name,
           middle_name,

@@ -35,7 +35,7 @@ import DialogModal from "../../../../components/DialogModal";
 
 // api
 import userApi from "../../../../services/userApi";
-import medicalStatusApi from "../../../../services/medicalStatusApi";
+import medicalApplicationApi from "../../../../services/medicalApplicationApi";
 // schema
 import { UpdateUserSchema } from "../../../../yup-schema/updateUserSchema";
 
@@ -86,7 +86,7 @@ export default function UserProfile() {
   const [textAreaValue, setTextAreaValue] = React.useState("");
   const { updateUser, viewUser } = userApi;
   const { createMedicalApplications, getMedicalApplications } =
-    medicalStatusApi;
+  medicalApplicationApi;
 
   const { userAppointment } = useSelector((store) => store.userAppointment);
 
@@ -191,7 +191,7 @@ export default function UserProfile() {
       onSuccess: (data) => {
         queryClient.invalidateQueries(["get-all-medical-applications"]);
         toast.success("Updated successfully");
-        navigate(-1);
+        navigate('/medical-applications');
       },
       onError: (data) => {
         console.log(data);
@@ -400,7 +400,7 @@ export default function UserProfile() {
             height: 100,
             marginTop: 10,
           }}
-          placeholder="Leave a comment"
+          placeholder="Remarks"
           value={textAreaValue}
           onChange={(e) => {
             setTextAreaValue(e.target.value);

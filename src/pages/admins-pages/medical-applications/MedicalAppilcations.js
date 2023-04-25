@@ -28,7 +28,7 @@ import DialogModal from "../../../components/DialogModal";
 
 // api
 import medicalReservationApi from "../../../services/medicalReservationApi";
-import medicalStatusApi from "../../../services/medicalStatusApi";
+import medicalApplicationApi from "../../../services/medicalApplicationApi";
 
 // redux
 import { setAppointment } from "../../../store/medicalAppointmentSlice";
@@ -37,7 +37,7 @@ import { setAppointment } from "../../../store/medicalAppointmentSlice";
 
 export default function MedicalApplications() {
   const { getAppointments, setToVerified } = medicalReservationApi;
-  const { getVerified, getMedicalApplications } = medicalStatusApi;
+  const { getVerified, getMedicalApplications } = medicalApplicationApi;
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -82,7 +82,26 @@ export default function MedicalApplications() {
       setAppointmentList(
         medicalData.data.map((data) => ({
           id: data.id,
-          referenceCode: data.status === "1" ? data.reference_code : "N/A",
+          referenceCode: data.reference_code,
+          appointmentStatus: (
+            <Chip
+            label={
+              data?.appointment?.status.toString() === "1"
+                ? "Active"
+                : data?.appointment?.status.toString() === "2"
+                ? "Verified"
+                : "Expired"
+            }
+            color={
+              data?.appointment?.status.toString() === "1"
+                ? "success"
+                : data?.appointment?.status.toString() === "2"
+                ? "info"
+                : "error"
+            }
+          />
+          ),
+          // referenceCode: data.status === "1" ? data.reference_code : "N/A",
           fullName: `${
             data.user.first_name.charAt(0).toUpperCase() +
             data.user.first_name.slice(1)
@@ -93,11 +112,23 @@ export default function MedicalApplications() {
             data.user.last_name.charAt(0).toUpperCase() +
             data.user.last_name.slice(1)
           }`,
-          status: (
+          medicalStatus: (
             <Chip
-              label={data.status.toString() === "1" ? "Approved" : "Declined"}
-              color={data.status.toString() === "1" ? "success" : "error"}
-            />
+            label={
+              data?.status.toString() === "0"
+                ? "Pending"
+                : data?.status.toString() === "1"
+                ? "Approved"
+                : "Declined"
+            }
+            color={
+              data?.status.toString() === "0"
+                ? "warning"
+                : data?.status.toString() === "1"
+                ? "info"
+                : "error"
+            }
+          />
           ),
           comment: data.comment,
           action: (
@@ -107,6 +138,7 @@ export default function MedicalApplications() {
                   onClick={() => {
                     setUserHandler(data);
                   }}
+                  disabled={data?.appointment?.status !== "2"}
                 >
                   <Iconify icon="ic:baseline-remove-red-eye" />
                 </IconButton>
@@ -130,7 +162,7 @@ export default function MedicalApplications() {
   }, [medicalStatus, medicalData]);
 
   const setUserHandler = async (data) => {
-    navigate(`/medical-applications/user/view/${data.user.id}`);
+    navigate(`/medical-applications/view/${data.id}`);
   };
 
   const { mutate: setAppointed, isLoading: verificationIsLoading } =
@@ -155,9 +187,10 @@ export default function MedicalApplications() {
           hasButton={false}
           TABLE_HEAD={[
             { id: "fullName", label: "Full Name", align: "center" },
+            { id: "appointmentStatus", label: "Appointment Status", align: "center" },
+            { id: "medicalStatus", label: "Medical Status", align: "center" },
             { id: "referenceCode", label: "Reference Code", align: "center" },
-            { id: "status", label: "Status", align: "center" },
-            { id: "comment", label: "Comment", align: "center" },
+            { id: "comment", label: "Remarks", align: "center" },
             { id: "action", label: "Action", align: "center" },
           ]}
           TABLE_DATA={appointmentList}

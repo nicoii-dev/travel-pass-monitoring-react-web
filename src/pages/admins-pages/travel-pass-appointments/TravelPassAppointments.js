@@ -113,7 +113,7 @@ export default function TravelPassAppointments() {
           ),
           action: (
             <>
-              <Tooltip title="View Application">
+              {/* <Tooltip title="View Application">
                 <IconButton
                   onClick={() => {
                     dispatch(setAppointment(data));
@@ -123,7 +123,7 @@ export default function TravelPassAppointments() {
                 >
                   <Iconify icon="ic:baseline-remove-red-eye" />
                 </IconButton>
-              </Tooltip>
+              </Tooltip> */}
               <Tooltip title="Set to Appointed">
                 <IconButton
                   onClick={() => {
@@ -168,6 +168,7 @@ export default function TravelPassAppointments() {
           hasButton={false}
           buttonFunction={() => navigate("/schedules/create")}
           TABLE_HEAD={[
+            { id: "fullName", label: "Full Name", align: "center" },
             { id: "scheduleDate", label: "Schedule Date", align: "center" },
             {
               id: "scheduleTime",
@@ -175,7 +176,6 @@ export default function TravelPassAppointments() {
               align: "center",
             },
             { id: "referenceCode", label: "Reference Code", align: "center" },
-            { id: "fullName", label: "Full Name", align: "center" },
             { id: "status", label: "Status", align: "center" },
             { id: "action", label: "Action", align: "center" },
           ]}

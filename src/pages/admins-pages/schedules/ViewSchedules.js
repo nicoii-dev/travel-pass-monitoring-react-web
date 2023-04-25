@@ -35,6 +35,8 @@ import schedulesApi from "../../../services/schedulesApi";
 
 // schema
 import { ScheduleSchema } from "../../../yup-schema/createScheduleSchema";
+import { getLocalStorageItem } from "../../../utils/getLocalStorage";
+import { USER } from "../../../utils/constants/user";
 // ----------------------------------------------------------------------
 
 const RootStyle = styled("div")(({ theme }) => ({
@@ -75,8 +77,10 @@ export default function ViewSchedule() {
   const schedule = useParams();
   const { viewSchedule, updateSchedule } = schedulesApi;
   const minDate = new Date(new Date().getTime() + 86400000);
+  const userData = getLocalStorageItem(USER.USER_DATA);
 
   const defaultValues = {
+    scheduleType: "",
     scheduleDate: new Date(),
     scheduleTime: "1",
     maxLsi: 1,
@@ -98,9 +102,10 @@ export default function ViewSchedule() {
     () => viewSchedule(schedule.id),
     {
       onSuccess: (data) => {
-        const { schedule_date, schedule_time, max_lsi } = data?.data;
+        const { schedule_type, schedule_date, schedule_time, max_lsi } = data?.data;
 
         reset({
+          scheduleType: schedule_type,
           scheduleDate: moment(schedule_date).format("MM-DD-YYYY"),
           scheduleTime: schedule_time,
           maxLsi: max_lsi,
@@ -165,14 +170,14 @@ export default function ViewSchedule() {
             <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
               <Stack spacing={3}>
                 <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                  <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                    <RHFDropDown
-                      name="scheduleType"
-                      label="Schedule Type"
-                      dropDownData={scheduleType}
-                    />
-                  </Stack>
-
+                  <RHFDropDown
+                    name="scheduleType"
+                    label="Schedule Type"
+                    dropDownData={scheduleType}
+                    disabled={userData.role.toLowerCase() === 'police' || userData.role.toLowerCase() === 'medicalstaff'}   
+                  />
+                </Stack>
+                <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                   <RHFDatePicker
                     name="scheduleDate"
                     label="Schedule Date"

@@ -113,7 +113,7 @@ export default function MedicalAppointments() {
           ),
           action: (
             <>
-              <Tooltip title="View Profile">
+              {/* <Tooltip title="View Profile">
                 <IconButton
                   onClick={() => {
                     dispatch(setAppointment(data));
@@ -123,7 +123,7 @@ export default function MedicalAppointments() {
                 >
                   <Iconify icon="ic:baseline-remove-red-eye" />
                 </IconButton>
-              </Tooltip>
+              </Tooltip> */}
               <Tooltip title="Set to Appointed">
                 <IconButton
                   onClick={() => {
@@ -143,6 +143,7 @@ export default function MedicalAppointments() {
   }, [appointmentsStatus, appointmentsData]);
 
   const setUserHandler = async (data) => {
+    console.log(data)
     if(data.status !== "2") {
       navigate(`/medical-appointments/user/view-only/${data.user.id}`);
       return;
@@ -171,6 +172,7 @@ export default function MedicalAppointments() {
           hasButton={false}
           buttonFunction={() => navigate("/schedules/create")}
           TABLE_HEAD={[
+            { id: "fullName", label: "Full Name", align: "center" },
             { id: "scheduleDate", label: "Schedule Date", align: "center" },
             {
               id: "scheduleTime",
@@ -178,7 +180,6 @@ export default function MedicalAppointments() {
               align: "center",
             },
             { id: "referenceCode", label: "Reference Code", align: "center" },
-            { id: "fullName", label: "Full Name", align: "center" },
             { id: "status", label: "Status", align: "center" },
             { id: "action", label: "Action", align: "center" },
           ]}

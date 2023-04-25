@@ -35,6 +35,8 @@ import schedulesApi from "../../../services/schedulesApi";
 
 // schema
 import { ScheduleSchema } from "../../../yup-schema/createScheduleSchema";
+import { getLocalStorageItem } from "../../../utils/getLocalStorage";
+import { USER } from "../../../utils/constants/user";
 // ----------------------------------------------------------------------
 
 const RootStyle = styled("div")(({ theme }) => ({
@@ -73,11 +75,12 @@ export default function CreateSchedule() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { createSchedules } = schedulesApi;
+  const userData = getLocalStorageItem(USER.USER_DATA);
 
   const minDate = new Date(new Date().getTime() + 86400000);
 
   const defaultValues = {
-    scheduleType: 'medical',
+    scheduleType: userData.role.toLowerCase() === 'police' ? 'travelpass' : 'medical',
     scheduleDate: dayjs(minDate),
     scheduleTime: "1",
     maxLsi: 1,
@@ -145,7 +148,8 @@ export default function CreateSchedule() {
                   <RHFDropDown
                     name="scheduleType"
                     label="Schedule Type"
-                    dropDownData={scheduleType}             
+                    dropDownData={scheduleType} 
+                    disabled={userData.role.toLowerCase() === 'police' || userData.role.toLowerCase() === 'medicalstaff'}            
                   />
                 </Stack>
 

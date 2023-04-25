@@ -22,6 +22,11 @@ const MedicalStaffNav = [
     icon: getIcon('material-symbols:medical-information-outline'),
   },
   {
+    title: 'Medical Applications',
+    path: '/medical-applications',
+    icon: getIcon('material-symbols:medical-information-outline'),
+  },
+  {
     title: 'Schedules',
     path: '/schedules',
     icon: getIcon('grommet-icons:schedules'),

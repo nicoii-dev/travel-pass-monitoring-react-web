@@ -37,6 +37,7 @@ import LandingPage from "../pages/LandingPage";
 import TravelPassApplicationForm from "../pages/admins-pages/travel-pass-appointments/view-only/ApplicationForm";
 import TravelPassView from "../pages/admins-pages/travel-pass-appointments/view-only/TravelPassView";
 import TravelPassApplicationView from "../pages/admins-pages/travel-pass-applications/view/TravelPassApplicationView";
+import AdminDashboard from "../pages/admins-pages/dashboard/AdminDashboard";
 
 const MainRoute = () => {
   const location = useLocation();
@@ -48,8 +49,8 @@ const MainRoute = () => {
       <>
         <Routes>
           <Route path="/" element={<DashboardLayout />}>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/dashboard" element={<HomePage />} />
+            <Route path="/" element={<AdminDashboard />} />
+            <Route path="/dashboard" element={<AdminDashboard />} />
             <Route path="locally-stranded-individual" element={<Lsi />} />
             <Route path="locally-stranded-individual/view/:id" element={<ViewLsi />} />
             <Route path="medical-appointments" element={<MedicalAppointments />} />
@@ -57,7 +58,7 @@ const MainRoute = () => {
             <Route path="medical-appointments/user/view-only/:id" element={<UserProfileViewOnly />} />
             <Route path="medical-applications" element={<MedicalApplications />} />
             <Route path="medical-applications/create" element={<MedicalUserProfile />} />
-            <Route path="medical-applications/user/view/:id" element={<MedicalUserProfile />} />
+            <Route path="medical-applications/view/:id" element={<MedicalUserProfile />} />
             <Route path="travel-pass-appointments" element={<TravelPassAppointments />} />
             <Route path="travel-pass-appointments/view/:id" element={<TravelPassView />} />
             <Route path="travel-pass-applications/view/:id" element={<TravelPassApplicationView />} />
@@ -83,17 +84,26 @@ const MainRoute = () => {
     );
   }
 
-  if (token && userData.role.toLowerCase() === 'medicalStaff') {
+  if (token && userData.role.toLowerCase() === 'medicalstaff') {
     return (
       <>
         <Routes>
           <Route path="/" element={<DashboardLayout />}>
-            <Route path="/" element={<HomePage />} />
-            <Route path="locally-stranded-individual" element={<User />} />
-            <Route path="medical-appointments" element={<User />} />
-            <Route path="schedule" element={<User />} />
-            <Route path="profile" element={<User />} />
+            <Route path="/" element={<AdminDashboard />} />
+            <Route path="/dashboard" element={<AdminDashboard />} />
+            <Route path="locally-stranded-individual" element={<Lsi />} />
+            <Route path="locally-stranded-individual/view/:id" element={<ViewLsi />} />
+            <Route path="medical-appointments" element={<MedicalAppointments />} />
+            <Route path="medical-appointments/user/view-update/:id" element={<UserProfile />} />
+            <Route path="medical-appointments/user/view-only/:id" element={<UserProfileViewOnly />} />
+            <Route path="medical-applications" element={<MedicalApplications />} />
+            <Route path="medical-applications/create" element={<MedicalUserProfile />} />
+            <Route path="medical-applications/view/:id" element={<MedicalUserProfile />} />
+            <Route path="schedules" element={<Schedules />} />
+            <Route path="schedules/create" element={<CreateSchedule />} />
+            <Route path="schedules/view/:id" element={<ViewSchedule />} />
             <Route path="404" element={<Page404 />} />
+            <Route path="scanned-qr/:id" element={<UserQrDetails />} />
             <Route
               path="*"
               element={
@@ -111,11 +121,22 @@ const MainRoute = () => {
       <>
         <Routes>
           <Route path="/" element={<DashboardLayout />}>
-            <Route path="/" element={<HomePage />} />
-            <Route path="locally-stranded-individual" element={<User />} />
-            <Route path="travel-pass-applications" element={<User />} />
-            <Route path="profile" element={<User />} />
+          <Route path="/" element={<AdminDashboard />} />
+            <Route path="/dashboard" element={<AdminDashboard />} />
+            <Route path="locally-stranded-individual" element={<Lsi />} />
+            <Route path="locally-stranded-individual/view/:id" element={<ViewLsi />} />
+            <Route path="medical-applications" element={<MedicalApplications />} />
+            <Route path="medical-applications/create" element={<MedicalUserProfile />} />
+            <Route path="medical-applications/view/:id" element={<MedicalUserProfile />} />
+            <Route path="travel-pass-appointments" element={<TravelPassAppointments />} />
+            <Route path="travel-pass-appointments/view/:id" element={<TravelPassView />} />
+            <Route path="travel-pass-applications/view/:id" element={<TravelPassApplicationView />} />
+            <Route path="travel-pass-applications" element={<TravelPassApplications />} />
+            <Route path="schedules" element={<Schedules />} />
+            <Route path="schedules/create" element={<CreateSchedule />} />
+            <Route path="schedules/view/:id" element={<ViewSchedule />} />
             <Route path="404" element={<Page404 />} />
+            <Route path="scanned-qr/:id" element={<UserQrDetails />} />
             <Route
               path="*"
               element={

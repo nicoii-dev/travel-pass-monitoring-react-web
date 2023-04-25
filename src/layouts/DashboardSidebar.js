@@ -76,7 +76,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
         return AdminNav;
       case "police":
         return PoliceNav;
-      case "medicalStaff":
+      case "medicalstaff":
         return MedicalStaffNav;
       case "lsi":
         return UserNav;

@@ -1,6 +1,6 @@
 import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { toast } from "react-toastify";
 import moment from "moment/moment";
@@ -20,6 +20,8 @@ import {
   Stack,
   CircularProgress,
   Avatar,
+  Button,
+  TextareaAutosize,
 } from "@mui/material";
 import dayjs from "dayjs";
 import { LoadingButton } from "@mui/lab";
@@ -33,9 +35,11 @@ import {
   RHFDatePicker,
 } from "../../../../components/hook-form";
 import UserAddress from "./UserAddress";
+import DialogModal from "../../../../components/DialogModal";
 
 // api
 import userApi from "../../../../services/userApi";
+import medicalApplicationApi from "../../../../services/medicalApplicationApi";
 
 // schema
 import { UpdateUserSchema } from "../../../../yup-schema/updateUserSchema";
@@ -79,11 +83,15 @@ const positionData = [
 
 export default function MedicalUserProfile() {
   const queryClient = useQueryClient();
-  const user = useParams();
+  const application = useParams();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = React.useState(null);
+  const [medicalData, setMedicalData] = React.useState([]);
   const [currentAddressData, setCurrentAddressData] = React.useState([]);
-  const { updateUser, viewUser } = userApi;
+  const { viewMedicalApplications, updateMedicalApplications } =
+    medicalApplicationApi;
+  const [open, setOpen] = useState(false);
+  const [approved, setApproved] = useState(false);
+  const [textAreaValue, setTextAreaValue] = React.useState("");
 
   const defaultValues = {
     firstName: "",
@@ -115,39 +123,34 @@ export default function MedicalUserProfile() {
   } = methods;
 
   const { mutate: View, isLoading: viewIsLoading } = useMutation(
-    (payload) => viewUser(user.id),
+    (payload) => viewMedicalApplications(application.id),
     {
       onSuccess: (data) => {
-        const {
-          first_name,
-          middle_name,
-          last_name,
-          gender,
-          dob,
-          phone_number,
-          role,
-          status,
-          email,
-        } = data?.data;
-
+        setMedicalData(data.data);
         reset({
-          firstName: first_name.charAt(0).toUpperCase() + first_name.slice(1),
-          middleName: middle_name.charAt(0).toUpperCase() + first_name.slice(1),
-          lastName: last_name.charAt(0).toUpperCase() + first_name.slice(1),
-          phoneNumber: phone_number,
-          gender,
-          dob,
-          role,
-          status,
-          email,
-          region: data?.data?.current_address?.region,
-          province: data?.data?.current_address?.province,
-          city: data?.data?.current_address?.city_municipality,
-          barangay: data?.data?.current_address?.barangay,
-          street: data?.data?.current_address?.street,
-          zipcode: data?.data?.current_address?.zipcode,
+          firstName:
+            data?.data?.user?.first_name.charAt(0).toUpperCase() +
+            data?.data?.user?.first_name.slice(1),
+          middleName:
+            data?.data?.user?.middle_name.charAt(0).toUpperCase() +
+            data?.data?.user?.middle_name.slice(1),
+          lastName:
+            data?.data?.user?.last_name.charAt(0).toUpperCase() +
+            data?.data?.user?.last_name.slice(1),
+          phoneNumber: data?.data?.user?.phone_number,
+          gender: data?.data?.user?.gender,
+          dob: data?.data?.user?.dob,
+          role: data?.data?.user?.role,
+          status: data?.data?.user?.status,
+          email: data?.data?.user?.email,
+          region: data?.data?.user?.current_address?.region,
+          province: data?.data?.user?.current_address?.province,
+          city: data?.data?.user?.current_address?.city_municipality,
+          barangay: data?.data?.user?.current_address?.barangay,
+          street: data?.data?.user?.current_address?.street,
+          zipcode: data?.data?.user?.current_address?.zipcode,
         });
-        setCurrentAddressData(data?.data?.current_address);
+        setCurrentAddressData(data?.data?.user?.current_address);
       },
       onError: (data) => {
         console.log(data);
@@ -158,25 +161,31 @@ export default function MedicalUserProfile() {
 
   useEffect(() => {
     View();
-  }, [View, user]);
+  }, [View, application]);
 
   const { mutate: Update, isLoading: updateIsLoading } = useMutation(
-    (payload) => updateUser(user.id, payload),
+    (payload) => updateMedicalApplications(application.id, payload),
     {
       onSuccess: (data) => {
         queryClient.invalidateQueries(["get-all-users"]);
         toast.success("Updated successfully");
-        setIsLoading(false);
         navigate(-1);
       },
       onError: (data) => {
         console.log(data);
         toast.error(data.response.data.message);
-        setIsLoading(false);
       },
     }
   );
 
+  const updateApplication = async () => {
+    const payload = {
+      status: approved ? "1" : "2",
+      remarks: textAreaValue,
+    };
+    // console.log(payload)
+    await Update(payload);
+  };
 
   return (
     <Page title="View User">
@@ -187,28 +196,64 @@ export default function MedicalUserProfile() {
               <CircularProgress sx={{ placeSelf: "center" }} />
             ) : (
               <>
-                <div style={{ padding: 5, zIndex: 9999, marginBottom: 20 }}>
-                  <Tooltip title="View">
-                    <IconButton onClick={() => navigate(-1)}>
-                      <Iconify
-                        icon="ion:arrow-back-circle"
-                        sx={{ width: 30, height: 30 }}
-                      />
-                    </IconButton>
-                  </Tooltip>
-                  <Typography
-                    variant="h4"
-                    gutterBottom
-                    sx={{ mb: 2, alignSelf: "flex-end" }}
-                  >
-                    Viewing LSI Profile
-                  </Typography>
+                <div role="presentation" style={{ position: "relative" }}>
+                  <div style={{ padding: 5, zIndex: 9999, marginBottom: 20 }}>
+                    <Tooltip title="View">
+                      <IconButton onClick={() => navigate(-1)}>
+                        <Iconify
+                          icon="ion:arrow-back-circle"
+                          sx={{ width: 30, height: 30 }}
+                        />
+                      </IconButton>
+                    </Tooltip>
+                    <Typography
+                      variant="h4"
+                      gutterBottom
+                      sx={{ mb: 2, alignSelf: "flex-end" }}
+                    >
+                      Viewing LSI Profile
+                    </Typography>
+                  </div>
+                  <div style={{ position: "absolute", top: 10, right: 10 }}>
+                    {medicalData?.status === "0" ? (
+                      <>
+                        <LoadingButton
+                          variant="contained"
+                          color="error"
+                          onClick={() => {
+                            setOpen(true);
+                            setApproved(false);
+                          }}
+                          sx={{ marginRight: 2, width: 120 }}
+                          type="button"
+                        >
+                          Decline
+                        </LoadingButton>
+                        <LoadingButton
+                          variant="contained"
+                          color="primary"
+                          onClick={() => {
+                            setOpen(true);
+                            setApproved(true);
+                          }}
+                          sx={{ width: 120 }}
+                          type="button"
+                        >
+                          Approve
+                        </LoadingButton>
+                      </>
+                    ) : medicalData.status === "1" ? (
+                      <Typography sx={{ color: "green", fontWeight: "bold" }}>
+                        Approved Application
+                      </Typography>
+                    ) : (
+                      <Typography sx={{ color: "red", fontWeight: "bold" }}>
+                        Declined Application
+                      </Typography>
+                    )}
+                  </div>
                 </div>
-
-                <FormProvider
-                  methods={methods}
-                  onSubmit={() => {}}
-                >
+                <FormProvider methods={methods} onSubmit={() => {}}>
                   <Stack spacing={3}>
                     <>
                       <Stack
@@ -312,6 +357,61 @@ export default function MedicalUserProfile() {
           </ContentStyle>
         </Container>
       </RootStyle>
+      <DialogModal
+        open={open}
+        handleClose={() => {
+          setOpen(false);
+        }}
+        // title={'Delete User'}
+        // subtitle={'Are you sure you want to delete this user?'}
+        buttons
+      >
+        <Typography variant="h4" sx={{ mt: 1, textAlign: "center" }}>
+          {`Are your sure you want to ${
+            approved ? "APPROVE" : "DECLINE"
+          } this application?`}
+        </Typography>
+        <TextareaAutosize
+          style={{
+            width: "100%",
+            fontSize: 16,
+            borderColor: "black",
+            outline: "none",
+            borderRadius: 5,
+            height: 100,
+            marginTop: 10,
+          }}
+          placeholder="Remarks"
+          value={textAreaValue}
+          onChange={(e) => {
+            setTextAreaValue(e.target.value);
+          }}
+        />
+        <Stack
+          spacing={2}
+          direction="row"
+          sx={{ alignItems: "flex-end", justifyContent: "flex-end", mt: 7 }}
+        >
+          <Button
+            variant="text"
+            onClick={() => {
+              setOpen(false);
+              setTextAreaValue('');
+            }}
+          >
+            Cancel
+          </Button>
+
+          <LoadingButton
+            variant="outlined"
+            color={approved ? "success" : "error"}
+            onClick={() => updateApplication()}
+            loading={updateIsLoading}
+          >
+            Yes
+          </LoadingButton>
+        </Stack>
+      </DialogModal>
     </Page>
   );
 }

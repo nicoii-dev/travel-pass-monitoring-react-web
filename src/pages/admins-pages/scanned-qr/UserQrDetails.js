@@ -116,42 +116,31 @@ export default function UserQrDetails() {
   } = methods;
 
   const { mutate: View, isLoading: viewIsLoading } = useMutation(
-    (payload) => viewQrDetails(user.id),
+    () => viewQrDetails(user.id),
     {
       onSuccess: (data) => {
-        console.log(data?.data[0]?.user?.current_address);
-        const {
-          first_name,
-          middle_name,
-          last_name,
-          gender,
-          dob,
-          phone_number,
-          role,
-          email,
-        } = data?.data[0]?.user;
-
+        console.log(data)
         reset({
-          startDate: moment(data?.data[0]?.start_date).format("MMMM-DD-YYYY"),
-          expiryDate: moment(data?.data[0]?.end_date).format("MMMM-DD-YYYY"),
-          status: data?.data[0]?.status === "1" ? "ACTIVE" : "EXPIRED",
-          firstName: first_name.charAt(0).toUpperCase() + first_name.slice(1),
-          middleName: middle_name.charAt(0).toUpperCase() + first_name.slice(1),
-          lastName: last_name.charAt(0).toUpperCase() + first_name.slice(1),
-          phoneNumber: phone_number,
-          gender,
-          dob,
-          role,
-          userStatus: data?.data[0]?.user?.status,
-          email,
-          region: data?.data[0]?.user?.current_address?.region,
-          province: data?.data[0]?.user?.current_address?.province,
-          city: data?.data[0].user?.current_address?.city_municipality,
-          barangay: data?.data[0]?.user?.current_address?.barangay,
-          street: data?.data[0]?.user?.current_address?.street,
-          zipcode: data?.data[0]?.user?.current_address?.zipcode,
+          startDate: moment(data?.data?.start_date).format("MMMM-DD-YYYY"),
+          expiryDate: moment(data?.data?.end_date).format("MMMM-DD-YYYY"),
+          status: data?.data?.status === "1" ? "ACTIVE" : "EXPIRED",
+          firstName: data?.data?.user?.first_name?.charAt(0).toUpperCase() + data?.data?.user?.first_name?.slice(1),
+          middleName: data?.data?.user?.middle_name?.charAt(0).toUpperCase() + data?.data?.user?.middle_name?.slice(1),
+          lastName: data?.data?.user?.last_name?.charAt(0).toUpperCase() + data?.data?.user?.last_name?.slice(1),
+          phoneNumber: data?.data?.user?.phone_number,
+          gender: data?.data?.user?.phone_number,
+          dob: data?.data?.user?.date_of_birhth,
+          role: data?.data?.user?.role,
+          userStatus: data?.data?.user?.status,
+          email: data?.data?.user?.email,
+          region: data?.data?.user?.current_address?.region,
+          province: data?.data?.user?.current_address?.province,
+          city: data?.data.user?.current_address?.city_municipality,
+          barangay: data?.data?.user?.current_address?.barangay,
+          street: data?.data?.user?.current_address?.street,
+          zipcode: data?.data?.user?.current_address?.zipcode,
         });
-        setCurrentAddressData(data?.data[0]?.user?.current_address);
+        setCurrentAddressData(data?.data?.user?.current_address);
       },
       onError: (data) => {
         console.log(data);
