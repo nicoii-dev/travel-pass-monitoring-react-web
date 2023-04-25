@@ -7,4 +7,7 @@ export default {
   createMedicalApplications: (payload) => apiService.post(`/medical-applications/create`, payload),
   viewMedicalApplications: (id) => apiService.post(`/medical-applications/view/${id}`),
   updateMedicalApplications: (id, payload) => apiService.post(`/medical-applications/update/${id}`, payload),
+
+  getUserMedicalApplications: () =>apiService.post(`medical-applications/user-medical-applications`),
+
 };

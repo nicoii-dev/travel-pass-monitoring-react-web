@@ -125,7 +125,7 @@ export default function MedicalApplications() {
               data?.status.toString() === "0"
                 ? "warning"
                 : data?.status.toString() === "1"
-                ? "info"
+                ? "success"
                 : "error"
             }
           />

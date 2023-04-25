@@ -11,4 +11,6 @@ export default {
 
   approveApplication: (id, payload) =>apiService.post(`travelpass-applications/approve/${id}`, payload),
   declineApplication: (id, payload) =>apiService.post(`travelpass-applications/decline/${id}`, payload),
+
+  getUserTravelApplications: () =>apiService.post(`travelpass-applications/user-travel-applications`),
 };

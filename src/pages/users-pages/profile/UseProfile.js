@@ -205,7 +205,7 @@ export default function UserPageProfile() {
                 title="Edit"
                 sx={{ position: "absolute", top: 0, right: 10 }}
               >
-                <IconButton onClick={() => setEdit(true)}>
+                <IconButton onClick={() => setEdit(!edit)}>
                   <Iconify
                     icon="material-symbols:edit"
                     sx={{ width: 30, height: 30 }}
