@@ -104,6 +104,7 @@ const MainRoute = () => {
             <Route path="schedules/view/:id" element={<ViewSchedule />} />
             <Route path="404" element={<Page404 />} />
             <Route path="scanned-qr/:id" element={<UserQrDetails />} />
+            <Route path="profile" element={<ProfilePage />} />
             <Route
               path="*"
               element={
@@ -137,6 +138,7 @@ const MainRoute = () => {
             <Route path="schedules/view/:id" element={<ViewSchedule />} />
             <Route path="404" element={<Page404 />} />
             <Route path="scanned-qr/:id" element={<UserQrDetails />} />
+            <Route path="profile" element={<ProfilePage />} />
             <Route
               path="*"
               element={

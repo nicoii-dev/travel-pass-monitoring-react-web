@@ -16,6 +16,8 @@ import UserPageProfile from "./UseProfile";
 import SecurityForm from "./UpdatePassword";
 import TravelPassTable from "./TravelPassTable";
 import MedicalTable from "./MedicalApplicationsTable";
+import { getLocalStorageItem } from "../../../utils/getLocalStorage";
+import { USER } from "../../../utils/constants/user";
 
 const RootStyle = styled("div")(({ theme }) => ({
   [theme.breakpoints.up("md")]: {
@@ -39,6 +41,7 @@ const ProfilePage = () => {
   const [crumb, setCrumb] = useState("profile");
   const [openMedical, setOpenMedical] = useState(false);
   const [openTravelPass, setOpenTravelPass] = useState(false);
+  const userData = getLocalStorageItem(USER.USER_DATA);
 
   return (
     <Page title="Profile Page">
@@ -68,31 +71,33 @@ const ProfilePage = () => {
                   Security
                 </Typography>
               </Breadcrumbs>
-
-              <div style={{ position: "absolute", top: 0, right: 100 }}>
-                <LoadingButton
-                  variant="contained"
-                  color="warning"
-                  onClick={() => {
-                    setOpenMedical(true);
-                  }}
-                  sx={{ marginRight: 2, width: 150 }}
-                  type="button"
-                >
-                  Medical Applications
-                </LoadingButton>
-                <LoadingButton
-                  variant="contained"
-                  color="primary"
-                  onClick={() => {
-                    setOpenTravelPass(true);
-                  }}
-                  sx={{ width: 150 }}
-                  type="button"
-                >
-                  Travel Pass Applications
-                </LoadingButton>
-              </div>
+              {userData.role.toLowerCase() === "police" ||
+              userData.role.toLowerCase() === "medicalstaff" ? null : (
+                <div style={{ position: "absolute", top: 0, right: 100 }}>
+                  <LoadingButton
+                    variant="contained"
+                    color="warning"
+                    onClick={() => {
+                      setOpenMedical(true);
+                    }}
+                    sx={{ marginRight: 2, width: 150 }}
+                    type="button"
+                  >
+                    Medical Applications
+                  </LoadingButton>
+                  <LoadingButton
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                      setOpenTravelPass(true);
+                    }}
+                    sx={{ width: 150 }}
+                    type="button"
+                  >
+                    Travel Pass Applications
+                  </LoadingButton>
+                </div>
+              )}
             </div>
             <Box>
               {crumb === "profile" ? <UserPageProfile /> : <SecurityForm />}

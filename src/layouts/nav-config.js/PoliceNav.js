@@ -36,6 +36,11 @@ const PoliceNav = [
     path: '/schedules',
     icon: getIcon('grommet-icons:schedules'),
   },
+  {
+    title: 'My Profile',
+    path: '/profile',
+    icon: getIcon('carbon:user-profile-alt'),
+  },
 ];
 
 export default PoliceNav;

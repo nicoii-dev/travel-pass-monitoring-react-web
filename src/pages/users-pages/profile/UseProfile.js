@@ -124,8 +124,8 @@ export default function UserPageProfile() {
 
         reset({
           firstName: first_name.charAt(0).toUpperCase() + first_name.slice(1),
-          middleName: middle_name.charAt(0).toUpperCase() + first_name.slice(1),
-          lastName: last_name.charAt(0).toUpperCase() + first_name.slice(1),
+          middleName: middle_name.charAt(0).toUpperCase() + middle_name.slice(1),
+          lastName: last_name.charAt(0).toUpperCase() + last_name.slice(1),
           phoneNumber: phone_number,
           gender,
           civilStatus: civil_status,
@@ -157,7 +157,7 @@ export default function UserPageProfile() {
     (payload) => updateUser(userData.id, payload),
     {
       onSuccess: (data) => {
-        queryClient.invalidateQueries(["get-all-users"]);
+        // queryClient.invalidateQueries(["get-all-users"]);
         toast.success("Updated successfully");
         setIsLoading(false);
         setEdit(false)
